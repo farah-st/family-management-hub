@@ -1,0 +1,10 @@
+<h2>Recipes</h2>
+<ul>
+  <li *ngFor="let recipe of recipes">
+    <strong>{{ recipe.title }}</strong> - ${{ recipe.estimatedCost }}
+    <ul>
+      <li *ngFor="let ing of recipe.ingredients">{{ ing }}</li>
+    </ul>
+  </li>
+</ul>
+

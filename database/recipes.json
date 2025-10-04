@@ -1,0 +1,22 @@
+[
+  {
+    "title": "Chicken Alfredo Pasta",
+    "ingredients": [
+      { "name": "Chicken breast", "amount": "2 pcs" },
+      { "name": "Fettuccine pasta", "amount": "200g" },
+      { "name": "Alfredo sauce", "amount": "1 cup" }
+    ],
+    "estimatedCost": 12,
+    "nutrition": { "calories": 600, "protein": 40 }
+  },
+  {
+    "title": "Veggie Stir Fry",
+    "ingredients": [
+      { "name": "Broccoli", "amount": "1 cup" },
+      { "name": "Carrots", "amount": "1 cup" },
+      { "name": "Soy sauce", "amount": "2 tbsp" }
+    ],
+    "estimatedCost": 8,
+    "nutrition": { "calories": 300, "protein": 12 }
+  }
+]
