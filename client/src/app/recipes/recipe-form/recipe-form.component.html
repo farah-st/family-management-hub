@@ -1,0 +1,39 @@
+<div class="p-4 max-w-2xl mx-auto">
+  <a routerLink="/recipes" class="underline">&larr; Back to recipes</a>
+  <h1 class="text-2xl font-semibold mt-4">{{ isEdit ? 'Edit Recipe' : 'New Recipe' }}</h1>
+
+  <form (ngSubmit)="submit()" class="grid gap-3 mt-4">
+    <label class="grid gap-1">
+      <span>Title</span>
+      <input class="border rounded-lg p-2" [(ngModel)]="model.title" name="title" required />
+    </label>
+
+    <label class="grid gap-1">
+      <span>Description</span>
+      <textarea class="border rounded-lg p-2" [(ngModel)]="model.description" name="description"></textarea>
+    </label>
+
+    <label class="grid gap-1">
+      <span>Image URL</span>
+      <input class="border rounded-lg p-2" [(ngModel)]="model.imageUrl" name="imageUrl" />
+    </label>
+
+    <div class="mt-2">
+      <h2 class="font-medium mb-2">Ingredients</h2>
+      <div class="grid gap-2">
+        <div class="flex gap-2 items-center" *ngFor="let ing of model.ingredients; let i = index">
+          <input class="border rounded-lg p-2 flex-1" placeholder="Qty (e.g., 2 cups)"
+                 [(ngModel)]="ing.qty" name="qty{{i}}">
+          <input class="border rounded-lg p-2 flex-1" placeholder="Name (e.g., Flour)"
+                 [(ngModel)]="ing.name" name="name{{i}}" required>
+          <button type="button" class="px-3 py-2 rounded-lg border" (click)="removeIngredient(i)">−</button>
+        </div>
+      </div>
+      <button type="button" class="mt-2 px-3 py-2 rounded-lg border" (click)="addIngredient()">+ Add ingredient</button>
+    </div>
+
+    <button class="mt-4 px-4 py-2 rounded-lg bg-black text-white" type="submit">
+      {{ isEdit ? 'Save Changes' : 'Create Recipe' }}
+    </button>
+  </form>
+</div>

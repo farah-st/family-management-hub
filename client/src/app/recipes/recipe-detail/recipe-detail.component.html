@@ -1,0 +1,25 @@
+<div *ngIf="recipe; else notFound" class="p-4 max-w-3xl mx-auto">
+  <a routerLink="/recipes" class="underline">&larr; Back to recipes</a>
+
+  <div class="mt-4 grid gap-4">
+    <h1 class="text-2xl font-semibold">{{ recipe.title }}</h1>
+    <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="" class="rounded-xl max-h-72 object-cover">
+    <p class="text-gray-700">{{ recipe.description }}</p>
+
+    <section>
+      <h2 class="font-medium mb-2">Ingredients</h2>
+      <ul class="list-disc pl-6">
+        <li *ngFor="let ing of recipe.ingredients">{{ ing.qty ? (ing.qty + ' ') : ''}}{{ ing.name }}</li>
+      </ul>
+    </section>
+
+    <div class="flex gap-3">
+      <a [routerLink]="['/recipes', recipe.id, 'edit']" class="px-3 py-2 rounded-lg border">Edit</a>
+      <button (click)="addToGrocery()" class="px-3 py-2 rounded-lg bg-black text-white">Send to Grocery List</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #notFound>
+  <div class="p-6">Recipe not found.</div>
+</ng-template>

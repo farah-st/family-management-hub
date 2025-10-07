@@ -1,18 +1,25 @@
 export interface Recipe {
+  id: string;
   title: string;
+  description?: string;
+  estimatedCost?: number;
   ingredients: string[];
-  estimatedCost: number;
 }
 
 export const RECIPES: Recipe[] = [
   {
-    title: "Chicken Alfredo Pasta",
-    ingredients: ["Chicken breast", "Fettuccine pasta", "Alfredo sauce"],
-    estimatedCost: 12
+    id: '1',
+    title: 'Spaghetti',
+    description: 'Classic tomato pasta',
+    estimatedCost: 8.5,
+    ingredients: ['Spaghetti', 'Tomato sauce', 'Garlic']
   },
   {
-    title: "Veggie Stir Fry",
-    ingredients: ["Broccoli", "Carrots", "Soy sauce"],
-    estimatedCost: 8
+    id: '2',
+    title: 'Chicken Tacos',
+    description: 'Weeknight favorite',
+    estimatedCost: 12,
+    ingredients: ['Tortillas', 'Chicken', 'Onion', 'Cilantro']
   }
 ];
+
