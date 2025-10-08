@@ -1,1 +1,11 @@
-<app-recipe-list></app-recipe-list>
+<header class="app-header">
+  <nav>
+    <a routerLink="/recipes" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Recipes</a>
+    <a routerLink="/recipes/new" routerLinkActive="active">New Recipe</a>
+    <a routerLink="/grocery-list" routerLinkActive="active">Grocery List</a>
+  </nav>
+</header>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>
