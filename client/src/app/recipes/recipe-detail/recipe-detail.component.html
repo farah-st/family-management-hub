@@ -1,25 +1,32 @@
-<div *ngIf="recipe; else notFound" class="p-4 max-w-3xl mx-auto">
+<div class="p-4 max-w-3xl mx-auto">
   <a routerLink="/recipes" class="underline">&larr; Back to recipes</a>
 
-  <div class="mt-4 grid gap-4">
-    <h1 class="text-2xl font-semibold">{{ recipe.title }}</h1>
-    <img *ngIf="recipe.imageUrl" [src]="recipe.imageUrl" alt="" class="rounded-xl max-h-72 object-cover">
-    <p class="text-gray-700">{{ recipe.description }}</p>
+  <ng-container *ngIf="recipe; else notFound">
+    <h1 class="text-2xl font-semibold mt-2">{{ recipe.title }}</h1>
+    <p class="text-gray-700 mb-4">{{ recipe.description }}</p>
 
-    <section>
-      <h2 class="font-medium mb-2">Ingredients</h2>
-      <ul class="list-disc pl-6">
-        <li *ngFor="let ing of recipe.ingredients">{{ ing.qty ? (ing.qty + ' ') : ''}}{{ ing.name }}</li>
+    <div class="mb-4" *ngIf="recipe?.ingredients?.length">
+      <h2 class="font-medium">Ingredients</h2>
+      <ul class="list-disc ml-6">
+        <li *ngFor="let ing of recipe!.ingredients; let i = index">
+          <ng-container *ngIf="(ing?.name || ing?.qty); else emptyRow">
+            {{ ing.name || 'Unnamed ingredient' }}
+            <span *ngIf="ing.qty"> – {{ ing.qty }}</span>
+          </ng-container>
+          <ng-template #emptyRow>
+            <em class="text-gray-500">[blank ingredient {{ i + 1 }}]</em>
+          </ng-template>
+        </li>
       </ul>
-    </section>
+    </div>
 
     <div class="flex gap-3">
       <a [routerLink]="['/recipes', recipe.id, 'edit']" class="px-3 py-2 rounded-lg border">Edit</a>
-      <button (click)="addToGrocery()" class="px-3 py-2 rounded-lg bg-black text-white">Send to Grocery List</button>
+      <button (click)="addToGrocery()" class="px-3 py-2 rounded-lg border">Add to grocery list</button>
     </div>
-  </div>
-</div>
+  </ng-container>
 
-<ng-template #notFound>
-  <div class="p-6">Recipe not found.</div>
-</ng-template>
+  <ng-template #notFound>
+    <h1 class="text-xl font-semibold text-red-600 mt-2">Recipe not found</h1>
+  </ng-template>
+</div>

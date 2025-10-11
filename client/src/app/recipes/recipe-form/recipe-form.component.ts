@@ -39,8 +39,15 @@ export class RecipeFormComponent {
   removeIngredient(i: number) { this.model.ingredients.splice(i, 1); }
 
   submit() {
+  // Remove empty ingredient rows
+    this.model.ingredients = (this.model.ingredients || []).filter(
+      ing => (ing?.name?.trim()?.length || 0) > 0
+    );
+    // Basic guard: require a title
+    if (!this.model.title?.trim()) return;
     if (this.isEdit) this.recipes.update(this.model.id, this.model);
     else this.recipes.create(this.model);
     this.router.navigate(['/recipes', this.model.id]);
   }
+
 }

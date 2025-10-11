@@ -1,18 +1,20 @@
-// C:\...\recipe-list.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { RECIPES, Recipe } from '../recipes';
+import { Recipe } from '../../models/recipe.model';
+import { RecipeService } from '../../services/recipe.service';
 
 @Component({
   selector: 'app-recipe-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],            
+  imports: [CommonModule, RouterModule],
   templateUrl: './recipe-list.component.html',
   styleUrls: ['./recipe-list.component.scss']
 })
 export class RecipeListComponent {
-  recipes: Recipe[] = RECIPES;
+  private recipeService = inject(RecipeService);
+  recipes: Recipe[] = this.recipeService.list();
 }
+
 
 
