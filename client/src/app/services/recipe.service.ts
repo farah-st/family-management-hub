@@ -1,38 +1,59 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Recipe } from '../models/recipe.model';
 
 const KEY = 'fmh_recipes_v1';
 
 @Injectable({ providedIn: 'root' })
 export class RecipeService {
-  private _recipes: Recipe[] = [];
+  private recipesSubject = new BehaviorSubject<Recipe[]>(this.load());
+  public readonly recipes$: Observable<Recipe[]> = this.recipesSubject.asObservable();
 
-  constructor() {
-    this._recipes = this.load();
+  /** Return observable list */
+  list(): Observable<Recipe[]> {
+    return this.recipes$;
   }
 
-  private load(): Recipe[] {
-    const raw = localStorage.getItem(KEY);
-    return raw ? JSON.parse(raw) as Recipe[] : [];
+  /** Get one recipe by ID */
+  get(id: string): Recipe | undefined {
+    return this.recipesSubject.getValue().find(r => r.id === id);
   }
-  private save() { localStorage.setItem(KEY, JSON.stringify(this._recipes)); }
 
-  list(): Recipe[] { return [...this._recipes]; }
-  get(id: string): Recipe | undefined { return this._recipes.find(r => r.id === id); }
-
+  /** Create a new recipe and persist */
   create(recipe: Recipe) {
-    this._recipes = [recipe, ...this._recipes];
-    this.save();
+    const next = [recipe, ...this.recipesSubject.getValue()];
+    this.recipesSubject.next(next);
+    this.save(next);
   }
 
+  /** Update existing recipe and persist */
   update(id: string, patch: Partial<Recipe>) {
-    this._recipes = this._recipes.map(r => r.id === id ? { ...r, ...patch } : r);
-    this.save();
+    const next = this.recipesSubject.getValue().map(r =>
+      r.id === id ? { ...r, ...patch } : r
+    );
+    this.recipesSubject.next(next);
+    this.save(next);
   }
 
+  /** ✅ Remove recipe and persist */
   remove(id: string) {
-    this._recipes = this._recipes.filter(r => r.id !== id);
-    this.save();
+    const next = this.recipesSubject.getValue().filter(r => r.id !== id);
+    this.recipesSubject.next(next);
+    this.save(next);
+  }
+
+  /** Load from localStorage */
+  private load(): Recipe[] {
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? (JSON.parse(raw) as Recipe[]) : [];
+    } catch {
+      return [];
+    }
+  }
+
+  /** Save to localStorage */
+  private save(recipes: Recipe[]) {
+    localStorage.setItem(KEY, JSON.stringify(recipes));
   }
 }
-

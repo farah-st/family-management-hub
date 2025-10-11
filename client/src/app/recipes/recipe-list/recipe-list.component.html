@@ -1,16 +1,41 @@
 <div class="p-4 max-w-3xl mx-auto">
-  <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-semibold">Recipes</h1>
-    <a routerLink="/recipes/new" class="px-3 py-2 rounded-lg border">+ New</a>
-  </div>
+  <ng-container *ngIf="filteredRecipes$ | async as recipes">
 
-  <ul class="grid gap-2">
-    <li *ngFor="let recipe of recipes" class="border rounded-xl p-3 flex justify-between items-center">
-      <div>
-        <div class="font-medium">{{ recipe.title }}</div>
-        <div class="text-sm text-gray-600">{{ recipe.description }}</div>
-      </div>
-      <a [routerLink]="['/recipes', recipe.id]" class="underline">Open</a>
-    </li>
-  </ul>
+    <div class="search-bar">
+      <input
+        class="border rounded px-3 py-2 w-full"
+        placeholder="Search recipes or ingredients…"
+        [(ngModel)]="query"
+        (ngModelChange)="onQueryChange($event)"
+      />
+      <a routerLink="/recipes/new" class="underline whitespace-nowrap">+ New</a>
+    </div>
+
+    <p class="no-results" *ngIf="!recipes.length">No recipes found.</p>
+
+    <ul class="recipe-list" *ngIf="recipes.length">
+      <li *ngFor="let r of recipes; trackBy: trackById" class="border rounded p-3">
+        <a [routerLink]="['/recipes', r.id]" class="font-medium underline">{{ r.title }}</a>
+        <p class="text-gray-700" *ngIf="r.description">{{ r.description }}</p>
+
+        <div *ngIf="hasNamedIngredients(r)">
+          <span class="text-sm text-gray-600">Ingredients:</span>
+          <ul class="list-disc ml-6">
+            <ng-container *ngFor="let ing of r.ingredients">
+              <li *ngIf="ing?.name">
+                {{ ing.name }}<span *ngIf="ing?.qty"> – {{ ing.qty }}</span>
+              </li>
+            </ng-container>
+          </ul>
+        </div>
+        <div class="mt-3 text-right">
+          <button type="button" class="text-sm text-red-600 underline"
+                  (click)="confirmRemove(r, $event)">
+            Remove
+          </button>
+        </div>
+      </li>
+      
+    </ul>
+  </ng-container>
 </div>
