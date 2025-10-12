@@ -28,14 +28,27 @@
             </ng-container>
           </ul>
         </div>
-        <div class="mt-3 text-right">
-          <button type="button" class="text-sm text-red-600 underline"
-                  (click)="confirmRemove(r, $event)">
+
+        <div class="actions">
+          <a
+            [routerLink]="['/recipes', r.id, 'edit']"
+            [attr.aria-label]="'Edit recipe ' + (r?.title ?? '')"
+          >
+            Edit
+          </a>
+
+          <button
+            type="button"
+            (click)="confirmRemove(r, $event)"
+            [attr.aria-label]="'Remove recipe ' + (r?.title ?? '')"
+          >
             Remove
           </button>
         </div>
+
+
       </li>
-      
     </ul>
   </ng-container>
 </div>
+
