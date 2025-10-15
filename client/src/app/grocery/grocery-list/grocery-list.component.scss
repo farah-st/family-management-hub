@@ -1,0 +1,73 @@
+:host {
+  display: block;
+  padding: 1rem;
+  max-width: 40rem; 
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+  color: #1f2937; 
+}
+
+// Heading
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  color: #111827; 
+}
+
+// Empty state
+p {
+  text-align: center;
+  color: #6b7280; 
+  margin-top: 2rem;
+}
+
+// List
+ul {
+  list-style: none;
+  border-top: 1px solid #e5e7eb; 
+  border-bottom: 1px solid #e5e7eb;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e5e7eb;
+
+    span {
+      flex: 1;
+      color: #374151;
+    }
+
+    button {
+      color: #dc2626; 
+      font-size: 0.875rem;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      cursor: pointer;
+
+      &:hover {
+        color: #b91c1c; 
+      }
+    }
+  }
+}
+
+// Clear all button
+button {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db; 
+  border-radius: 0.5rem;
+  background-color: #f9fafb;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: #f3f4f6; 
+  }
+}

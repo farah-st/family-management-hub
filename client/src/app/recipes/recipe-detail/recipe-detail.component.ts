@@ -9,7 +9,8 @@ import { Recipe } from '../../models/recipe.model';
   selector: 'app-recipe-detail',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './recipe-detail.component.html'
+  templateUrl: './recipe-detail.component.html',
+  styleUrls: ['./recipe-detail.component.scss']
 })
 export class RecipeDetailComponent {
   private route = inject(ActivatedRoute);

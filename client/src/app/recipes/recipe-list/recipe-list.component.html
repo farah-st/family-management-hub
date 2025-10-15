@@ -30,6 +30,15 @@
         </div>
 
         <div class="actions">
+          <button
+            type="button"
+            (click)="addRecipeToGrocery(r, $event)"
+            [disabled]="!hasNamedIngredients(r)"
+            [attr.aria-label]="'Add ' + (r?.title ?? 'recipe') + ' to grocery list'"
+          >
+            Add to grocery list
+          </button>
+
           <a
             [routerLink]="['/recipes', r.id, 'edit']"
             [attr.aria-label]="'Edit recipe ' + (r?.title ?? '')"
@@ -45,8 +54,7 @@
             Remove
           </button>
         </div>
-
-
+        
       </li>
     </ul>
   </ng-container>

@@ -11,7 +11,8 @@ function newId() { return Date.now().toString(36); }
   selector: 'app-recipe-form',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
-  templateUrl: './recipe-form.component.html'
+  templateUrl: './recipe-form.component.html',
+  styleUrls: ['./recipe-form.component.scss']
 })
 export class RecipeFormComponent {
   private route = inject(ActivatedRoute);

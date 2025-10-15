@@ -18,10 +18,10 @@
       <input class="border rounded-lg p-2" [(ngModel)]="model.imageUrl" name="imageUrl" />
     </label>
 
-    <div class="mt-2">
-      <h2 class="font-medium mb-2">Ingredients</h2>
+    <div class="ingredients">
+      <h2>Ingredients</h2>
       <div class="grid gap-2">
-        <div class="flex gap-2 items-center" *ngFor="let ing of model.ingredients; let i = index">
+        <div class="ingredient-row" *ngFor="let ing of model.ingredients; let i = index">
           <input class="border rounded-lg p-2 flex-1" placeholder="Qty (e.g., 2 cups)"
                  [(ngModel)]="ing.qty" name="qty{{i}}">
           <input class="border rounded-lg p-2 flex-1" placeholder="Name (e.g., Flour)"
@@ -29,7 +29,7 @@
           <button type="button" class="px-3 py-2 rounded-lg border" (click)="removeIngredient(i)">−</button>
         </div>
       </div>
-      <button type="button" class="mt-2 px-3 py-2 rounded-lg border" (click)="addIngredient()">+ Add ingredient</button>
+      <button type="button" class="add-btn" (click)="addIngredient()">+ Add ingredient</button>
     </div>
 
     <button class="mt-4 px-4 py-2 rounded-lg bg-black text-white" type="submit">

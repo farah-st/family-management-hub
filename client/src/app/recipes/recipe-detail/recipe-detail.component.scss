@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  padding: 1rem;
+  max-width: 40rem;
+  margin: 0 auto;
+  font-family: system-ui, sans-serif;
+  color: #1f2937; 
+}
+
+a {
+  color: #2563eb;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+
+  label {
+    display: grid;
+    gap: 0.25rem;
+
+    span {
+      font-weight: 500;
+      color: #374151; 
+    }
+
+    input,
+    textarea {
+      border: 1px solid #d1d5db; 
+      border-radius: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.95rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+      }
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+  }
+}
+
+/* Ingredients section */
+.ingredients {
+  margin-top: 1.25rem;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+
+  h2 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .ingredient-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    input {
+      flex: 1;
+    }
+
+    button {
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      font-size: 1.25rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+
+      &:hover {
+        background: #f3f4f6;
+        color: #dc2626; 
+      }
+    }
+  }
+
+  .add-btn {
+    margin-top: 0.75rem;
+    display: inline-block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #f3f4f6;
+    }
+  }
+}
+
+/* Submit button */
+button[type='submit'] {
+  margin-top: 1.25rem;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: #111827; 
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+
+  &:hover {
+    background-color: #000;
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}

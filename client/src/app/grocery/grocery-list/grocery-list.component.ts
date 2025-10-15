@@ -6,7 +6,8 @@ import { GroceryListService } from '../../services/grocery-list.service';
   selector: 'app-grocery-list',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './grocery-list.component.html'
+  templateUrl: './grocery-list.component.html',
+  styleUrls: ['./grocery-list.component.scss']
 })
 export class GroceryListComponent {
   private svc = inject(GroceryListService);
