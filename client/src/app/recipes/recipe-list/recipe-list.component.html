@@ -32,6 +32,7 @@
         <div class="actions">
           <button
             type="button"
+            class="add-btn"
             (click)="addRecipeToGrocery(r, $event)"
             [disabled]="!hasNamedIngredients(r)"
             [attr.aria-label]="'Add ' + (r?.title ?? 'recipe') + ' to grocery list'"

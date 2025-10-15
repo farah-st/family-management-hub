@@ -1,4 +1,78 @@
-.app-header { padding: .75rem 1rem; border-bottom: 1px solid #eee; }
-nav a { margin-right: .75rem; text-decoration: none; }
-.active { font-weight: 600; text-decoration: underline; }
-.container { padding: 1rem; }
+/* app.component.scss */
+
+:host {
+  display: block;
+  font-family: system-ui, sans-serif;
+  color: #1f2937; 
+  background-color: #fff;
+}
+
+/* Header */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background-color: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid #e5e7eb; 
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 3.5rem; 
+    max-width: 80rem; 
+    margin: 0 auto;
+    padding: 0 1rem;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      font-size: 0.95rem;
+      transition: background-color 0.2s, opacity 0.2s;
+
+      &:hover {
+        background-color: #f3f4f6; 
+      }
+
+      &.font-semibold {
+        font-weight: 600;
+        letter-spacing: -0.015em;
+      }
+
+      &.active,
+      &.router-link-active {
+        font-weight: 500;
+        background-color: #f3f4f6;
+        border-radius: 0.5rem;
+      }
+    }
+
+    .ml-auto {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .new-recipe {
+      background-color: #000;
+      color: #fff;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      font-weight: 500;
+
+      &:hover {
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
+/* Main container */
+main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
