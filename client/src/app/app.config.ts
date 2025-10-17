@@ -9,5 +9,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withFetch()),
     provideAnimations(),
+    provideHttpClient(), 
   ],
 };
