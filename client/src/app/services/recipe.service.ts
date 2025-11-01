@@ -16,15 +16,21 @@ export class RecipeService {
   public readonly recipes$ = this.recipesSubject.asObservable();
 
   constructor() {
-    // Prime cache from server; keep local data if it fails.
+    // Prime cache from server; keep local data if server is empty or fails.
     this.http.get<RawRecipe[]>(this.base).pipe(
       map(arr => arr.map(this.normalizeId))
     ).subscribe({
       next: normalized => {
-        this.recipesSubject.next(normalized);
-        this.save(normalized);
+        if (normalized.length > 0) {
+          this.recipesSubject.next(normalized);
+          this.save(normalized);
+        } else {
+          console.warn('Server returned 0 recipes — keeping local cache.');
+        }
       },
-      error: () => { /* optional log */ }
+      error: (err) => {
+        console.warn('Server fetch failed — keeping local cache.', err);
+      }
     });
   }
 

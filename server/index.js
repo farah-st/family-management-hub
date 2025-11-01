@@ -4,6 +4,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { randomUUID } = require('crypto');
+const Recipe = require('./models/recipe.model.js');
 
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 4000;
@@ -30,39 +31,59 @@ function newId() {
   return randomUUID();
 }
 
-// Recipes (REST)
-app.get('/api/recipes', (_req, res) => {
-  res.json(recipes);
+// Recipes (REST) — Mongo-backed
+app.get('/api/recipes', async (_req, res, next) => {
+  try {
+    // ⬅️ remove .lean() so Mongoose applies the toJSON id mapping
+    const items = await Recipe.find().sort({ createdAt: -1 });
+    res.json(items);
+  } catch (e) { next(e); }
 });
 
-app.post('/api/recipes', (req, res) => {
-  const body = req.body ?? {};
-  const item = {
-    id: newId(),
-    title: body.title ?? '',
-    description: body.description ?? '',
-    imageUrl: body.imageUrl ?? '',
-    ingredients: Array.isArray(body.ingredients) ? body.ingredients : [],
-  };
-  recipes.push(item);
-  res.status(201).json(item);
+app.get('/api/recipes/:id', async (req, res, next) => {
+  try {
+    // ⬅️ remove .lean() here too
+    const item = await Recipe.findById(req.params.id);
+    if (!item) return res.status(404).json({ message: 'Not found' });
+    res.json(item);
+  } catch (e) { next(e); }
 });
 
-app.put('/api/recipes/:id', (req, res) => {
-  const idx = recipes.findIndex(r => r.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ message: 'Not found' });
-
-  const { id: _ignore, ...rest } = req.body || {};
-  recipes[idx] = { ...recipes[idx], ...rest }; // keep original id
-  res.json(recipes[idx]);
+app.post('/api/recipes', async (req, res, next) => {
+  try {
+    const body = req.body ?? {};
+    const created = await Recipe.create({
+      title: body.title ?? '',
+      description: body.description ?? '',
+      imageUrl: body.imageUrl ?? '',
+      ingredients: Array.isArray(body.ingredients) ? body.ingredients : [],
+    });
+    res.status(201).json(created); // includes { id: "...", ... } via toJSON
+  } catch (e) { next(e); }
 });
 
-app.delete('/api/recipes/:id', (req, res) => {
-  const idx = recipes.findIndex(r => r.id === req.params.id);
-  if (idx === -1) return res.status(404).json({ message: 'Not found' });
-  recipes.splice(idx, 1);
-  res.status(204).end();
+app.put('/api/recipes/:id', async (req, res, next) => {
+  try {
+    const { id: _ignore, ...patch } = req.body || {};
+    // ⬅️ remove .lean() here too
+    const updated = await Recipe.findByIdAndUpdate(
+      req.params.id,
+      { $set: patch },
+      { new: true, runValidators: true }
+    );
+    if (!updated) return res.status(404).json({ message: 'Not found' });
+    res.json(updated);
+  } catch (e) { next(e); }
 });
+
+app.delete('/api/recipes/:id', async (req, res, next) => {
+  try {
+    const removed = await Recipe.findByIdAndDelete(req.params.id);
+    if (!removed) return res.status(404).json({ message: 'Not found' });
+    res.status(204).end();
+  } catch (e) { next(e); }
+});
+
 
 // Grocery (REST)
 app.get('/api/grocery', (_req, res) => {
