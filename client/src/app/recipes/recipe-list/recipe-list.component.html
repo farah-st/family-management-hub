@@ -12,52 +12,54 @@
     </div>
 
     <p class="no-results" *ngIf="!recipes.length">No recipes found.</p>
-
     <ul class="recipe-list" *ngIf="recipes.length">
-      <li *ngFor="let r of recipes; trackBy: trackById" class="border rounded p-3">
-        <a [routerLink]="['/recipes', r.id]" class="font-medium underline">{{ r.title }}</a>
-        <p class="text-gray-700" *ngIf="r.description">{{ r.description }}</p>
+  <li *ngFor="let r of recipes; trackBy: trackById" class="border rounded p-3">
+    <a [routerLink]="['/recipes', r.id]" class="font-medium underline">
+      {{ r.title }}
+    </a>
 
-        <div *ngIf="hasNamedIngredients(r)">
-          <span class="text-sm text-gray-600">Ingredients:</span>
-          <ul class="list-disc ml-6">
-            <ng-container *ngFor="let ing of r.ingredients">
-              <li *ngIf="ing?.name">
-                {{ ing.name }}<span *ngIf="ing?.qty"> – {{ ing.qty }}</span>
-              </li>
-            </ng-container>
-          </ul>
-        </div>
+    <p class="text-gray-700" *ngIf="r.description">{{ r.description }}</p>
 
-        <div class="actions">
-          <button
-            type="button"
-            class="add-btn"
-            (click)="addRecipeToGrocery(r, $event)"
-            [disabled]="!hasNamedIngredients(r)"
-            [attr.aria-label]="'Add ' + (r?.title ?? 'recipe') + ' to grocery list'"
-          >
-            Add to grocery list
-          </button>
+    <div *ngIf="hasNamedIngredients(r)">
+      <span class="text-sm text-gray-600">Ingredients:</span>
+      <ul class="list-disc ml-6">
+        <ng-container *ngFor="let ing of r.ingredients">
+          <li *ngIf="ing?.name">
+            {{ ing.name }}<span *ngIf="ing?.qty"> – {{ ing.qty }}</span>
+          </li>
+        </ng-container>
+      </ul>
+    </div>
 
-          <a
-            [routerLink]="['/recipes', r.id, 'edit']"
-            [attr.aria-label]="'Edit recipe ' + (r?.title ?? '')"
-          >
-            Edit
-          </a>
+    <div class="actions">
+      <button
+        type="button"
+        class="add-btn"
+        (click)="addRecipeToGrocery(r, $event)"
+        [disabled]="!hasNamedIngredients(r)"
+        [attr.aria-label]="'Add ' + (r?.title ?? 'recipe') + ' to grocery list'"
+      >
+        Add to grocery list
+      </button>
 
-          <button
-            type="button"
-            (click)="confirmRemove(r, $event)"
-            [attr.aria-label]="'Remove recipe ' + (r?.title ?? '')"
-          >
-            Remove
-          </button>
-        </div>
-        
-      </li>
-    </ul>
+      <a [routerLink]="['/recipes', r.id, 'edit']" [attr.aria-label]="'Edit recipe ' + (r?.title ?? '')">
+        Edit
+      </a>
+
+      <button
+        type="button"
+        (click)="confirmRemove(r, $event)"
+        [attr.data-id]="r.id"
+        [attr.aria-label]="'Remove recipe ' + (r?.title ?? '')"
+      >
+        Remove
+      </button>
+    </div>
+  </li>
+</ul>
+
+
+
   </ng-container>
 </div>
 

@@ -1,14 +1,22 @@
 {
   "name": "client",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
+    "start:hmr": "ng serve --hmr --proxy-config proxy.conf.json",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
+    "build:stats": "ng build --configuration production --stats-json",
+    "analyze": "source-map-explorer dist/client/browser/*.js",
+    "serve:prod": "npx http-server ./dist/client/browser -p 4201 -c-1",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "lint": "ng lint",
+    "format": "prettier --write \"{src,projects}/**/*.{ts,js,html,scss,css,json,md}\"",
+    "test": "ng test",
+    "test:watch": "ng test --watch"
   },
-  "private": true,
   "dependencies": {
     "@angular/animations": "^19.2.15",
     "@angular/common": "^19.2.0",
@@ -26,13 +34,28 @@
     "@angular-devkit/build-angular": "^19.2.10",
     "@angular/cli": "^19.2.10",
     "@angular/compiler-cli": "^19.2.0",
+    "@angular-eslint/builder": "^18.4.3",
+    "@angular-eslint/eslint-plugin": "^18.4.3",
+    "@angular-eslint/eslint-plugin-template": "^18.4.3",
+    "@angular-eslint/schematics": "^18.4.3",
+    "@angular-eslint/template-parser": "^18.4.3",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^22.7.5",
+    "eslint": "^9.11.1",
+    "eslint-plugin-import": "^2.31.0",
+    "http-server": "^14.1.1",
     "jasmine-core": "~5.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.3.3",
+    "postcss": "^8.4.47",
+    "autoprefixer": "^10.4.20",
+    "tailwindcss": "^3.4.14",
+    "source-map-explorer": "^2.5.3",
     "typescript": "~5.7.2"
   }
 }
+

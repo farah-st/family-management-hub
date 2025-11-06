@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, map, tap } from 'rxjs';
 import { Recipe } from '../models/recipe.model';
 
 const KEY = 'fmh_recipes_v2';
@@ -35,7 +35,31 @@ export class RecipeService {
   }
 
   /** Observable list */
-  list(): Observable<Recipe[]> { return this.recipes$; }
+  list(): Observable<Recipe[]> {
+    return this.recipes$;
+  }
+
+  /**
+   * Observable-by-id for route resolvers and detail views.
+   * Cache-first: resolves from the in-memory list; if not found,
+   * tries HTTP GET /recipes/:id and merges into cache.
+   */
+  getById(id: string): Observable<Recipe | null> {
+    const cached = this.get(id);
+    if (cached) return of(cached);
+
+    return this.http.get<RawRecipe>(`${this.base}/${id}`).pipe(
+      map(this.normalizeId),
+      tap(item => {
+        if (item?.id) {
+          const next = [item, ...this.recipesSubject.getValue().filter(r => r.id !== item.id)];
+          this.recipesSubject.next(next);
+          this.save(next);
+        }
+      }),
+      map(item => item ?? null)
+    );
+  }
 
   /** Synchronous snapshot lookup from cache (used by edit form prefill) */
   get(id: string): Recipe | undefined {
@@ -89,6 +113,7 @@ export class RecipeService {
     try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
     catch { return []; }
   }
+
   private save(recipes: Recipe[]) {
     localStorage.setItem(KEY, JSON.stringify(recipes));
   }

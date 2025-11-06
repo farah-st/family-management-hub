@@ -50,7 +50,7 @@ export class RecipeListComponent {
            recipe.ingredients.some(i => !!i?.name?.trim());
   }
 
-  trackById = (_: number, r: Recipe) => r.id;
+  trackById = (_: number, r: any) => r.id ?? r._id;
 
   addRecipeToGrocery(recipe: Recipe, ev?: Event) {
     ev?.stopPropagation();
@@ -66,12 +66,21 @@ export class RecipeListComponent {
   }
 
   confirmRemove(recipe: Recipe, ev?: Event) {
-    ev?.stopPropagation();
-    ev?.preventDefault();
-    if (!recipe?.id) return;
+  ev?.stopPropagation();
+  ev?.preventDefault();
+  if (!recipe?.id) return;
 
-    const ok = confirm(`Remove "${recipe.title}"? This cannot be undone.`);
-    if (ok) this.recipeService.remove(recipe.id);
-  }
+  const ok = confirm(`Remove "${recipe.title}"? This cannot be undone.`);
+  if (!ok) return;
+
+  this.recipeService.remove(recipe.id).subscribe({
+    next: () => { /* cache already updated in service */ },
+    error: (err) => {
+      console.error('Delete failed', err);
+      alert('Delete failed. See console for details.');
+    }
+  });
+}
+
 }
 
