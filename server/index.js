@@ -11,30 +11,36 @@ const PORT = process.env.PORT || 4000;
 
 const app = express();
 
-// middleware
+// ---------- Middleware ----------
 app.use(cors({
-  origin: ['http://localhost:4200'], // loosen to * only if you need to
+  origin: ['http://localhost:4200'], // loosen to * only if needed
 }));
 app.use(express.json());
 
-// health/root
+// ---------- Health / Root ----------
 app.get('/', (_req, res) => {
   res.json({ ok: true, service: 'family-hub-api' });
 });
 
-// ----- Minimal in-memory routes for dev -----
-let recipes = [];  // replace with DB later
-let grocery = [];  // replace with DB later
+// ---------- In-memory stores for fast dev (replace with DB later) ----------
+let grocery = [];
+let chores = [];
+let categories = [
+  // seed a couple of useful defaults
+  { id: randomUUID(), name: 'House', color: '#94a3b8' },
+  { id: randomUUID(), name: 'Kitchen', color: '#86efac' },
+  { id: randomUUID(), name: 'Yard', color: '#60a5fa' },
+];
 
-// util: simple id
+// Utility: new id
 function newId() {
   return randomUUID();
 }
 
-// Recipes (REST) — Mongo-backed
+// ========== RECIPES (Mongo-backed) ==========
 app.get('/api/recipes', async (_req, res, next) => {
   try {
-    // ⬅️ remove .lean() so Mongoose applies the toJSON id mapping
+    // Keep as Mongoose docs so toJSON gives `id`
     const items = await Recipe.find().sort({ createdAt: -1 });
     res.json(items);
   } catch (e) { next(e); }
@@ -42,7 +48,6 @@ app.get('/api/recipes', async (_req, res, next) => {
 
 app.get('/api/recipes/:id', async (req, res, next) => {
   try {
-    // ⬅️ remove .lean() here too
     const item = await Recipe.findById(req.params.id);
     if (!item) return res.status(404).json({ message: 'Not found' });
     res.json(item);
@@ -58,14 +63,13 @@ app.post('/api/recipes', async (req, res, next) => {
       imageUrl: body.imageUrl ?? '',
       ingredients: Array.isArray(body.ingredients) ? body.ingredients : [],
     });
-    res.status(201).json(created); // includes { id: "...", ... } via toJSON
+    res.status(201).json(created);
   } catch (e) { next(e); }
 });
 
 app.put('/api/recipes/:id', async (req, res, next) => {
   try {
-    const { id: _ignore, ...patch } = req.body || {};
-    // ⬅️ remove .lean() here too
+    const { id: _ignore, _id: _ignore2, ...patch } = req.body || {};
     const updated = await Recipe.findByIdAndUpdate(
       req.params.id,
       { $set: patch },
@@ -84,8 +88,7 @@ app.delete('/api/recipes/:id', async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
-
-// Grocery (REST)
+// ========== GROCERY (in-memory) ==========
 app.get('/api/grocery', (_req, res) => {
   res.json(grocery);
 });
@@ -109,34 +112,155 @@ app.delete('/api/grocery', (_req, res) => {
   res.status(204).end();
 });
 
-// 404 + error handlers
+// ========== CHORES (in-memory) ==========
+// Shape suggestion: { id, title, assignee, dueDate, priority, categoryId, completed, createdAt, updatedAt }
+app.get('/api/chores', (_req, res) => {
+  const items = [...chores].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+  res.json(items);
+});
+
+app.post('/api/chores', (req, res) => {
+  const body = req.body ?? {};
+  const title = (body.title ?? '').trim();
+  if (!title) return res.status(400).json({ message: 'Title is required' });
+
+  // optional: validate categoryId exists
+  const categoryId = body.categoryId ?? null;
+  if (categoryId && !categories.some(c => c.id === categoryId)) {
+    return res.status(400).json({ message: 'Invalid categoryId' });
+  }
+
+  const item = {
+    id: newId(),
+    title,
+    assignee: body.assignee ?? '',
+    dueDate: body.dueDate ?? null,
+    priority: body.priority ?? 'normal', // 'low' | 'normal' | 'high'
+    categoryId,
+    completed: false,
+    createdAt: Date.now(),
+    updatedAt: null,
+  };
+  chores.unshift(item);
+  res.status(201).json(item);
+});
+
+app.put('/api/chores/:id', (req, res) => {
+  const { id } = req.params;
+  const idx = chores.findIndex(c => c.id === id);
+  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+
+  const patch = req.body ?? {};
+  if (patch.title !== undefined && !String(patch.title).trim()) {
+    return res.status(400).json({ message: 'Title is required' });
+  }
+  if (patch.categoryId && !categories.some(c => c.id === patch.categoryId)) {
+    return res.status(400).json({ message: 'Invalid categoryId' });
+  }
+
+  chores[idx] = {
+    ...chores[idx],
+    ...patch,
+    updatedAt: Date.now(),
+  };
+  res.json(chores[idx]);
+});
+
+// matches your service.complete(id)
+app.post('/api/chores/:id/complete', (req, res) => {
+  const { id } = req.params;
+  const idx = chores.findIndex(c => c.id === id);
+  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+
+  chores[idx] = {
+    ...chores[idx],
+    completed: true,
+    updatedAt: Date.now(),
+  };
+  res.json(chores[idx]);
+});
+
+app.delete('/api/chores/:id', (req, res) => {
+  const { id } = req.params;
+  const before = chores.length;
+  chores = chores.filter(c => c.id !== id);
+  if (chores.length === before) return res.status(404).json({ message: 'Not found' });
+  res.status(204).end();
+});
+
+// ========== CATEGORIES (in-memory) ==========
+// Shape: { id, name, color }
+app.get('/api/categories', (_req, res) => {
+  const items = [...categories].sort((a, b) => a.name.localeCompare(b.name));
+  res.json(items);
+});
+
+app.post('/api/categories', (req, res) => {
+  const body = req.body ?? {};
+  const name = (body.name ?? '').trim();
+  if (!name) return res.status(400).json({ message: 'Name is required' });
+
+  const item = {
+    id: newId(),
+    name,
+    color: body.color ?? '#94a3b8', // slate-ish default
+  };
+  categories.push(item);
+  res.status(201).json(item);
+});
+
+app.put('/api/categories/:id', (req, res) => {
+  const { id } = req.params;
+  const idx = categories.findIndex(c => c.id === id);
+  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+
+  const body = req.body ?? {};
+  if (body.name !== undefined && !String(body.name).trim()) {
+    return res.status(400).json({ message: 'Name is required' });
+  }
+
+  categories[idx] = {
+    ...categories[idx],
+    ...body,
+  };
+  res.json(categories[idx]);
+});
+
+app.delete('/api/categories/:id', (req, res) => {
+  const { id } = req.params;
+  const before = categories.length;
+  categories = categories.filter(c => c.id !== id);
+  if (categories.length === before) return res.status(404).json({ message: 'Not found' });
+  res.status(204).end();
+});
+
+// ---------- 404 + Error handlers ----------
 app.use((_req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use((err, _req, res, _next) => {
   console.error(err);
   res.status(500).json({ message: 'Server error' });
 });
 
-// Start server (with optional Mongo) + GraphQL
+// ---------- Start server (connect Mongo for recipes) + GraphQL ----------
 (async () => {
   try {
     if (MONGO_URI) {
       await mongoose.connect(MONGO_URI);
       console.log('✅ MongoDB connected');
     } else {
-      console.warn('⚠️  MONGO_URI not set; continuing with in-memory data only.');
+      console.warn('⚠️  MONGO_URI not set; continuing with in-memory data for non-recipe resources.');
     }
   } catch (err) {
     console.error('Mongo connect failed:', err.message);
     console.warn('Continuing to serve in-memory routes…');
   }
 
-  // --- GraphQL (ESM packages) ---
+  // --- GraphQL (optional; uses in-memory grocery/recipes data passed to context) ---
   const { ApolloServer } = await import('@apollo/server');
   const { expressMiddleware } = await import('@as-integrations/express5');
   const { default: gqlSchema } = await import('./graphql/schema.mjs').catch(() => ({}));
   const { default: gqlResolvers } = await import('./graphql/resolvers.mjs').catch(() => ({}));
 
-  // If you export named (typeDefs/resolvers) instead of default, support that too:
   const modSchema = gqlSchema?.typeDefs ? gqlSchema.typeDefs : gqlSchema;
   const { typeDefs: namedTypeDefs } = await import('./graphql/schema.mjs').catch(() => ({}));
   const typeDefs = modSchema || namedTypeDefs;
@@ -148,21 +272,15 @@ app.use((err, _req, res, _next) => {
   if (!typeDefs || !resolvers) {
     console.warn('⚠️  GraphQL schema/resolvers not found. Skipping /graphql route.');
   } else {
-    // Optional: local landing page (GraphQL Sandbox) in dev
     let plugins = [];
     if (process.env.NODE_ENV !== 'production') {
       const { ApolloServerPluginLandingPageLocalDefault } = await import('@apollo/server/plugin/landingPage/default');
       plugins = [ApolloServerPluginLandingPageLocalDefault()];
     }
 
-    const server = new ApolloServer({
-      typeDefs,
-      resolvers,
-      plugins,
-    });
+    const server = new ApolloServer({ typeDefs, resolvers, plugins });
     await server.start();
 
-    // NOTE: Apollo recommends bodyParser.json() here
     app.use(
       '/graphql',
       cors({ origin: ['http://localhost:4200'] }),
@@ -170,7 +288,7 @@ app.use((err, _req, res, _next) => {
       expressMiddleware(server, {
         context: async ({ req }) => ({
           auth: req.headers.authorization ?? null,
-          collections: { recipes, grocery }, // pass in-memory stores to resolvers
+          collections: { recipes: [], grocery }, // you can wire chores/categories here if your schema uses them
           newId,
         }),
       })

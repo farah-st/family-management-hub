@@ -1,0 +1,70 @@
+<div class="mx-auto max-w-3xl p-4">
+  <header class="flex items-center gap-2 mb-4">
+    <h1 class="text-2xl font-semibold">Chores</h1>
+    <a class="ml-auto px-3 py-2 rounded-xl bg-black text-white" routerLink="new">
+      + New
+    </a>
+  </header>
+
+  <ng-container *ngIf="vm$ | async as vm; else loading">
+    <ng-container *ngIf="vm.length; else empty">
+      <ul class="grid gap-2">
+        <li
+          *ngFor="let c of vm; trackBy: trackById"
+          class="p-3 rounded-xl border flex items-center gap-3"
+        >
+          <!-- Complete button -->
+          <button
+            type="button"
+            (click)="complete(c)"
+            class="px-2 py-1 rounded-lg border text-xs"
+          >
+            Done
+          </button>
+
+          <!-- Title links to detail/edit -->
+          <a [routerLink]="[c.id]" class="font-medium">
+            {{ c.title }}
+          </a>
+
+          <!-- Due date -->
+          <span
+            *ngIf="firstDueDate(c) as due"
+            class="ml-2 text-xs text-slate-500"
+          >
+            Due {{ due | date: 'MMM d' }}
+          </span>
+
+          <!-- Priority -->
+          <span class="ml-auto text-xs opacity-70">
+            {{ c.priority }}
+          </span>
+
+          <!-- Delete button -->
+          <button
+            type="button"
+            class="ml-2 px-2 py-1 rounded-lg border text-xs text-red-600"
+            (click)="remove(c)"
+          >
+            Delete
+          </button>
+        </li>
+      </ul>
+    </ng-container>
+  </ng-container>
+
+  <ng-template #loading>
+    <div class="animate-pulse p-3 rounded-xl border">
+      Loading chores…
+    </div>
+  </ng-template>
+
+  <ng-template #empty>
+    <div class="text-center p-6 rounded-xl border">
+      <p class="mb-3">No chores yet.</p>
+      <a routerLink="new" class="px-3 py-2 rounded-xl border">
+        Create your first chore
+      </a>
+    </div>
+  </ng-template>
+</div>

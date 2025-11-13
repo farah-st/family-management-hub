@@ -1,0 +1,5 @@
+[
+  { "title": "Dishes", "priority": "med", "assignments": [], "completed": [], "active": true },
+  { "title": "Vacuum living room", "priority": "high", "assignments": [], "completed": [], "active": true },
+  { "title": "Laundry (fold)", "priority": "low", "assignments": [], "completed": [], "active": true }
+]

@@ -3,17 +3,21 @@ import { inject } from '@angular/core';
 import { of } from 'rxjs';
 
 import { RecipeService } from './services/recipe.service';
-import type { Recipe } from './models/recipe.model'; // adjust the path if needed
+import type { Recipe } from './models/recipe.model';
 
-// ---------- Resolver for recipe :id ----------
+/* =========================
+   RESOLVERS
+   ========================= */
 const recipeResolver: ResolveFn<Recipe | null> = (route) => {
   const svc = inject(RecipeService);
   const id = route.paramMap.get('id');
   if (!id) return of(null);
-  return svc.getById(id); // implemented in step 2
+  return svc.getById(id);
 };
 
-// ---------- Unsaved-changes guard ----------
+/* =========================
+   GUARDS
+   ========================= */
 type DirtyAware =
   | { isDirty?: () => boolean; form?: { dirty?: boolean } }
   | undefined;
@@ -23,9 +27,26 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
   return dirty ? confirm('You have unsaved changes. Leave this page?') : true;
 };
 
-export const routes: Routes = [
-  { path: '', pathMatch: 'full', redirectTo: 'recipes' },
+/* =========================
+   ROUTES
+   ========================= */
+  export const routes: Routes = [
+  /* ---------- Root landing page ---------- */
+  {
+    path: '',
+    pathMatch: 'full',
+    title: 'Family Hub',
+    loadComponent: () =>
+      import('./home/home.component')
+        .then(m => m.HomeComponent),
+  },
 
+
+  /* ---------- Legacy redirects ---------- */
+  // /chore → /chores (singular → plural)
+  { path: 'chore', redirectTo: 'chores', pathMatch: 'full' },
+
+  /* ---------- Recipes feature ---------- */
   {
     path: 'recipes',
     title: 'Recipes',
@@ -65,6 +86,7 @@ export const routes: Routes = [
     ],
   },
 
+  /* ---------- Grocery feature ---------- */
   {
     path: 'grocery-list',
     title: 'Grocery List',
@@ -73,6 +95,39 @@ export const routes: Routes = [
         .then(m => m.GroceryListComponent),
   },
 
+  /* ---------- Chores feature ---------- */
+  {
+    path: 'chores',
+    title: 'Chores',
+    children: [
+      {
+        path: '',
+        title: 'Chores',
+        loadComponent: () =>
+          import('./chores/chore-list/chore-list.component')
+            .then(m => m.ChoreListComponent),
+      },
+      {
+        path: 'new',
+        title: 'New Chore',
+        loadComponent: () =>
+          import('./chores/chore-form/chore-form.component')
+            .then(m => m.ChoreFormComponent),
+        canDeactivate: [confirmLeaveForm],
+      },
+      {
+        // Edit uses the same form as create
+        path: ':id',
+        title: 'Edit Chore',
+        loadComponent: () =>
+          import('./chores/chore-form/chore-form.component')
+            .then(m => m.ChoreFormComponent),
+        canDeactivate: [confirmLeaveForm],
+      },
+    ],
+  },
+
+  /* ---------- 404 (always last) ---------- */
   {
     path: '**',
     title: 'Not Found',
@@ -81,4 +136,3 @@ export const routes: Routes = [
         .then(m => m.NotFoundComponent),
   },
 ];
-
