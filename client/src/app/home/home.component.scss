@@ -1,0 +1,159 @@
+/* Page background & layout */
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f3f4f6; // light gray
+}
+
+/* Center content */
+.home-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+}
+
+/* Header */
+.home-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.home-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111827; // slate-900
+}
+
+.home-subtitle {
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: #6b7280; // slate-500
+}
+
+/* Grid for the two cards */
+.cards-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Card */
+.dashboard-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.view-all-link {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+/* Lists */
+.item-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.12s ease, transform 0.08s ease;
+}
+
+.item-row:hover {
+  background-color: #f9fafb;
+  transform: translateY(-1px);
+}
+
+/* Status dot */
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.status-complete {
+  background-color: #22c55e; // green
+}
+
+.status-pending {
+  background-color: #d1d5db; // gray
+}
+
+/* Links & pills */
+.item-link {
+  font-size: 0.9rem;
+  color: #111827;
+  text-decoration: none;
+}
+
+.item-link:hover {
+  text-decoration: underline;
+}
+
+.item-pill {
+  margin-left: auto;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* Buttons / chips */
+.primary-chip {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid #2563eb;
+  font-size: 0.85rem;
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.primary-chip:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Muted text */
+.muted-text {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+}

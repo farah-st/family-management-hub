@@ -13,43 +13,40 @@ import type { Chore } from '../models/chore.model';
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="mx-auto max-w-5xl p-4 space-y-6">
-      <header class="flex items-center gap-2 mb-2">
-        <h1 class="text-3xl font-semibold">Family Management Hub</h1>
-        <span class="ml-auto text-sm opacity-70">Dashboard</span>
+    <div class="home-container">
+      <header class="home-header">
+        <h1 class="home-title">Family Management Hub</h1>
+        <span class="home-subtitle">Dashboard</span>
       </header>
 
-      <div class="grid gap-4 md:grid-cols-2">
+      <div class="cards-grid">
         <!-- Chores summary -->
-        <section class="p-4 rounded-2xl border space-y-3">
-          <header class="flex items-center gap-2">
-            <h2 class="text-lg font-semibold">Chores</h2>
-            <a routerLink="/chores" class="ml-auto text-sm underline">
+        <section class="dashboard-card">
+          <header class="card-header">
+            <h2 class="card-title">Chores</h2>
+            <a routerLink="/chores" class="view-all-link">
               View all
             </a>
           </header>
 
           <ng-container *ngIf="chores$ | async as chores; else choresLoading">
             <ng-container *ngIf="chores.length; else choresEmpty">
-              <ul class="space-y-1">
-                <li
-                  *ngFor="let c of chores"
-                  class="flex items-center gap-2 text-sm"
-                >
+              <ul class="item-list">
+                <li *ngFor="let c of chores" class="item-row">
                   <span
-                    class="inline-flex h-2 w-2 rounded-full"
-                    [class.bg-green-500]="c.completed?.length"
-                    [class.bg-slate-300]="!c.completed?.length"
+                    class="status-dot"
+                    [class.status-complete]="c.completed.length"
+                    [class.status-pending]="!c.completed.length"
                   ></span>
 
                   <a
                     [routerLink]="['/chores', c.id]"
-                    class="truncate hover:underline"
+                    class="item-link"
                   >
                     {{ c.title }}
                   </a>
 
-                  <span class="ml-auto text-xs opacity-70">
+                  <span class="item-pill">
                     {{ c.priority }}
                   </span>
                 </li>
@@ -58,16 +55,16 @@ import type { Chore } from '../models/chore.model';
           </ng-container>
 
           <ng-template #choresLoading>
-            <p class="text-sm opacity-70">Loading chores…</p>
+            <p class="muted-text">Loading chores…</p>
           </ng-template>
 
           <ng-template #choresEmpty>
-            <p class="text-sm opacity-70 mb-2">
+            <p class="muted-text">
               No chores yet. Start by adding one!
             </p>
             <a
               routerLink="/chores/new"
-              class="inline-block px-3 py-1 rounded-xl border text-sm"
+              class="primary-chip"
             >
               + New chore
             </a>
@@ -75,24 +72,21 @@ import type { Chore } from '../models/chore.model';
         </section>
 
         <!-- Recipes summary -->
-        <section class="p-4 rounded-2xl border space-y-3">
-          <header class="flex items-center gap-2">
-            <h2 class="text-lg font-semibold">Recipes</h2>
-            <a routerLink="/recipes" class="ml-auto text-sm underline">
+        <section class="dashboard-card">
+          <header class="card-header">
+            <h2 class="card-title">Recipes</h2>
+            <a routerLink="/recipes" class="view-all-link">
               View all
             </a>
           </header>
 
           <ng-container *ngIf="recipes$ | async as recipes; else recipesLoading">
             <ng-container *ngIf="recipes.length; else recipesEmpty">
-              <ul class="space-y-1">
-                <li
-                  *ngFor="let r of recipes"
-                  class="flex items-center gap-2 text-sm"
-                >
+              <ul class="item-list">
+                <li *ngFor="let r of recipes" class="item-row">
                   <a
                     [routerLink]="['/recipes', r.id]"
-                    class="truncate hover:underline"
+                    class="item-link"
                   >
                     {{ r.title }}
                   </a>
@@ -102,16 +96,16 @@ import type { Chore } from '../models/chore.model';
           </ng-container>
 
           <ng-template #recipesLoading>
-            <p class="text-sm opacity-70">Loading recipes…</p>
+            <p class="muted-text">Loading recipes…</p>
           </ng-template>
 
           <ng-template #recipesEmpty>
-            <p class="text-sm opacity-70 mb-2">
+            <p class="muted-text">
               No recipes yet. Add your first one!
             </p>
             <a
               routerLink="/recipes/new"
-              class="inline-block px-3 py-1 rounded-xl border text-sm"
+              class="primary-chip"
             >
               + New recipe
             </a>
@@ -120,6 +114,8 @@ import type { Chore } from '../models/chore.model';
       </div>
     </div>
   `,
+
+  styleUrls: ['./home.component.scss']
 })
 export class HomeComponent {
   private recipeSvc = inject(RecipeService);
