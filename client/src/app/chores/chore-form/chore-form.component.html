@@ -1,1 +1,62 @@
-<p>chore-form works!</p>
+<form class="chore-form" [formGroup]="form" (ngSubmit)="save()">
+  <h1 class="chore-form__title">{{ isEdit ? 'Edit' : 'New' }} Chore</h1>
+
+  <label class="chore-form__field">
+    <span class="chore-form__label">Title</span>
+    <input
+      class="chore-form__input"
+      placeholder="Title"
+      formControlName="title"
+    />
+    <span
+      class="chore-form__error"
+      *ngIf="form.get('title')?.touched && form.get('title')?.invalid"
+    >
+      Title is required
+    </span>
+  </label>
+
+  <label class="chore-form__field">
+    <span class="chore-form__label">Notes</span>
+    <textarea
+      class="chore-form__input chore-form__input--textarea"
+      placeholder="Notes"
+      formControlName="notes"
+    ></textarea>
+  </label>
+
+  <label class="chore-form__field">
+    <span class="chore-form__label">Priority</span>
+    <select class="chore-form__input" formControlName="priority">
+      <option value="low">Low</option>
+      <option value="med">Medium</option>
+      <option value="high">High</option>
+    </select>
+  </label>
+
+  <label class="chore-form__field">
+    <span class="chore-form__label">Due date (optional)</span>
+    <input
+      class="chore-form__input"
+      type="date"
+      formControlName="dueDate"
+    />
+  </label>
+
+  <div class="chore-form__actions">
+    <button
+      class="btn btn--primary"
+      type="submit"
+      [disabled]="form.invalid"
+    >
+      Save
+    </button>
+    <button
+      type="button"
+      class="btn btn--ghost"
+      (click)="cancel()"
+    >
+      Cancel
+    </button>
+  </div>
+</form>

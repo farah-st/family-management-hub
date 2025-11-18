@@ -1,0 +1,122 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+  background: #f3f4f6; // light gray page background
+}
+
+/* Card-style form */
+.chore-form {
+  max-width: 36rem; // ~576px
+  margin: 0 auto;
+  padding: 1.75rem 1.5rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: grid;
+  gap: 1rem;
+}
+
+.chore-form__title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.chore-form__field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.chore-form__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151; // gray-700
+}
+
+/* Inputs, selects & textarea share base styles */
+.chore-form__input {
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db; // gray-300
+  padding: 0.5rem 0.75rem;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  background-color: #f9fafb;
+}
+
+.chore-form__input:focus {
+  border-color: #2563eb; // blue-600
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  background-color: #ffffff;
+}
+
+.chore-form__input--textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+/* Error text */
+.chore-form__error {
+  font-size: 0.75rem;
+  color: #dc2626; // red-600
+}
+
+/* Actions row */
+.chore-form__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+  justify-content: flex-end;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 9999px; // pill
+  padding: 0.45rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease, transform 0.05s ease;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btn[disabled],
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+/* Primary button */
+.btn--primary {
+  background-color: #111827; // almost black
+  color: #ffffff;
+}
+
+.btn--primary:hover:not(:disabled) {
+  background-color: #020617;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.35);
+}
+
+/* Ghost / secondary button */
+.btn--ghost {
+  background-color: #ffffff;
+  color: #111827;
+  border-color: #d1d5db;
+}
+
+.btn--ghost:hover:not(:disabled) {
+  background-color: #f3f4f6;
+  border-color: #9ca3af;
+}
