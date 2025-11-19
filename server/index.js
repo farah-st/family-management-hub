@@ -234,6 +234,42 @@ app.delete('/api/categories/:id', (req, res) => {
   res.status(204).end();
 });
 
+// ========== EXTERNAL API PROXY: TravelArrow ==========
+// Example request from Angular:
+//   GET /api/travelarrow/accounts/66e78a25c90855c29fbdf735
+//
+// This avoids CORS by having the server (not the browser) call api.travelarrow.io.
+app.get('/api/travelarrow/accounts/:accountId', async (req, res) => {
+  const { accountId } = req.params;
+
+  try {
+    const url = `https://api.travelarrow.io/accounts/${accountId}`;
+
+    // Node 18+ has global fetch. If you get "fetch is not defined",
+    // run: npm install node-fetch
+    // and at the top of the file add:
+    //   const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
+
+    const response = await fetch(url, {
+      // If the API needs auth, uncomment and configure:
+      // headers: { 'Authorization': `Bearer ${process.env.TRAVELARROW_TOKEN}` }
+    });
+
+    if (!response.ok) {
+      console.error('TravelArrow responded with status', response.status);
+      return res
+        .status(response.status)
+        .json({ message: 'TravelArrow error', status: response.status });
+    }
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    console.error('TravelArrow proxy error:', err);
+    res.status(500).json({ message: 'Failed to contact TravelArrow' });
+  }
+});
+
 // ---------- 404 + Error handlers ----------
 app.use((_req, res) => res.status(404).json({ message: 'Route not found' }));
 app.use((err, _req, res, _next) => {

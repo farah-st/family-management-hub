@@ -21,7 +21,8 @@
     "graphql": "^16.11.0",
     "graphql-tag": "^2.12.6",
     "mongoose": "^8.19.2",
-    "morgan": "^1.10.1"
+    "morgan": "^1.10.1",
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.3",
