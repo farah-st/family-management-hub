@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const { randomUUID } = require('crypto');
 const Recipe = require('./models/recipe.model.js');
+const Chore = require('./models/chore.model.js');
 
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 4000;
@@ -24,7 +25,6 @@ app.get('/', (_req, res) => {
 
 // ---------- In-memory stores for fast dev (replace with DB later) ----------
 let grocery = [];
-let chores = [];
 let categories = [
   // seed a couple of useful defaults
   { id: randomUUID(), name: 'House', color: '#94a3b8' },
@@ -112,80 +112,102 @@ app.delete('/api/grocery', (_req, res) => {
   res.status(204).end();
 });
 
-// ========== CHORES (in-memory) ==========
-// Shape suggestion: { id, title, assignee, dueDate, priority, categoryId, completed, createdAt, updatedAt }
-app.get('/api/chores', (_req, res) => {
-  const items = [...chores].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
-  res.json(items);
+// ========== CHORES (Mongo-backed) ==========
+app.get('/api/chores', async (_req, res, next) => {
+  try {
+    const items = await Chore.find().sort({ createdAt: -1 });
+    res.json(items);
+  } catch (e) {
+    next(e);
+  }
 });
 
-app.post('/api/chores', (req, res) => {
-  const body = req.body ?? {};
-  const title = (body.title ?? '').trim();
-  if (!title) return res.status(400).json({ message: 'Title is required' });
+app.post('/api/chores', async (req, res, next) => {
+  try {
+    const body = req.body ?? {};
+    const title = (body.title ?? '').trim();
+    if (!title) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
 
-  // optional: validate categoryId exists
-  const categoryId = body.categoryId ?? null;
-  if (categoryId && !categories.some(c => c.id === categoryId)) {
-    return res.status(400).json({ message: 'Invalid categoryId' });
+    const doc = await Chore.create({
+      title,
+      notes: body.notes ?? '',
+      priority: body.priority ?? 'med',
+      dueDate: body.dueDate ?? null, // string will be cast to Date if present
+
+      assignments: Array.isArray(body.assignments) ? body.assignments : [],
+      completed: Array.isArray(body.completed) ? body.completed : [],
+      active: typeof body.active === 'boolean' ? body.active : true,
+
+      // optional/legacy
+      assignee: body.assignee ?? '',
+      categoryId: body.categoryId ?? null,
+    });
+
+    res.status(201).json(doc);
+  } catch (e) {
+    next(e);
   }
-
-  const item = {
-    id: newId(),
-    title,
-    assignee: body.assignee ?? '',
-    dueDate: body.dueDate ?? null,
-    priority: body.priority ?? 'normal', // 'low' | 'normal' | 'high'
-    categoryId,
-    completed: false,
-    createdAt: Date.now(),
-    updatedAt: null,
-  };
-  chores.unshift(item);
-  res.status(201).json(item);
 });
 
-app.put('/api/chores/:id', (req, res) => {
-  const { id } = req.params;
-  const idx = chores.findIndex(c => c.id === id);
-  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+app.put('/api/chores/:id', async (req, res, next) => {
+  try {
+    const { id: _ignore, _id: _ignore2, ...patch } = req.body || {};
 
-  const patch = req.body ?? {};
-  if (patch.title !== undefined && !String(patch.title).trim()) {
-    return res.status(400).json({ message: 'Title is required' });
-  }
-  if (patch.categoryId && !categories.some(c => c.id === patch.categoryId)) {
-    return res.status(400).json({ message: 'Invalid categoryId' });
-  }
+    if (patch.title !== undefined && !String(patch.title).trim()) {
+      return res.status(400).json({ message: 'Title is required' });
+    }
 
-  chores[idx] = {
-    ...chores[idx],
-    ...patch,
-    updatedAt: Date.now(),
-  };
-  res.json(chores[idx]);
+    const updated = await Chore.findByIdAndUpdate(
+      req.params.id,
+      { $set: patch },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+
+    res.json(updated);
+  } catch (e) {
+    next(e);
+  }
 });
 
 // matches your service.complete(id)
-app.post('/api/chores/:id/complete', (req, res) => {
-  const { id } = req.params;
-  const idx = chores.findIndex(c => c.id === id);
-  if (idx === -1) return res.status(404).json({ message: 'Not found' });
+app.post('/api/chores/:id/complete', async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { memberId } = req.body ?? {};
 
-  chores[idx] = {
-    ...chores[idx],
-    completed: true,
-    updatedAt: Date.now(),
-  };
-  res.json(chores[idx]);
+    const chore = await Chore.findById(id);
+    if (!chore) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+
+    chore.completed.push({
+      on: new Date(),
+      memberId: memberId || undefined,
+    });
+
+    await chore.save();
+    res.json(chore);
+  } catch (e) {
+    next(e);
+  }
 });
 
-app.delete('/api/chores/:id', (req, res) => {
-  const { id } = req.params;
-  const before = chores.length;
-  chores = chores.filter(c => c.id !== id);
-  if (chores.length === before) return res.status(404).json({ message: 'Not found' });
-  res.status(204).end();
+app.delete('/api/chores/:id', async (req, res, next) => {
+  try {
+    const removed = await Chore.findByIdAndDelete(req.params.id);
+    if (!removed) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+    res.status(204).end();
+  } catch (e) {
+    next(e);
+  }
 });
 
 // ========== CATEGORIES (in-memory) ==========

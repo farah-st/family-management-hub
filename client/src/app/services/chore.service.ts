@@ -26,6 +26,7 @@ export class ChoreService {
       map(list => list.map(this.normalize))
     ).subscribe({
       next: list => {
+        // `list` is already normalized from the map above, but we’ll keep it simple:
         const normalized = list.map(this.normalize);
         this.subject.next(normalized);
         this.save(normalized);
@@ -34,68 +35,87 @@ export class ChoreService {
     });
   }
 
-//******************************************
-//* Listing & getting a single chore
-//******************************************
+  //******************************************
+  //* Listing & getting a single chore
+  //******************************************
   list(): Observable<Chore[]> { return this.chores$; }
+
   getById(id: string): Observable<Chore | null> {
     return this.list().pipe(map(xs => xs.find(x => x.id === id) ?? null));
   }
 
-//******************************************
-//* Creating a new chore
-//******************************************
+  //******************************************
+  //* Creating a new chore
+  //******************************************
   create(body: Partial<Chore>): Observable<Chore> {
     return this.http.post<Raw>(this.base, body).pipe(
       map(this.normalize),
-      tap(item => { const next = [item, ...this.subject.getValue()]; this.subject.next(next); this.save(next); })
+      tap(item => {
+        const next = [item, ...this.subject.getValue()];
+        this.subject.next(next);
+        this.save(next);
+      })
     );
   }
 
-//******************************************
-//* Updating a chore
-//******************************************
+  //******************************************
+  //* Updating a chore
+  //******************************************
   update(id: string, patch: Partial<Chore>): Observable<Chore> {
     return this.http.put<Raw>(`${this.base}/${id}`, patch).pipe(
       map(this.normalize),
-      tap(item => { const next = this.subject.getValue().map(x => x.id === id ? item : x); this.subject.next(next); this.save(next); })
+      tap(item => {
+        const next = this.subject.getValue().map(x => x.id === id ? item : x);
+        this.subject.next(next);
+        this.save(next);
+      })
     );
   }
 
-//******************************************
-//* Deleting a chore
-//******************************************
+  //******************************************
+  //* Deleting a chore
+  //******************************************
   remove(id: string) {
     return this.http.delete<void>(`${this.base}/${id}`).pipe(
-      tap(() => { const next = this.subject.getValue().filter(x => x.id !== id); this.subject.next(next); this.save(next); })
+      tap(() => {
+        const next = this.subject.getValue().filter(x => x.id !== id);
+        this.subject.next(next);
+        this.save(next);
+      })
     );
   }
 
-//******************************************
-//* Completing a chore
-//******************************************
+  //******************************************
+  //* Completing a chore
+  //******************************************
   complete(id: string, memberId?: string): Observable<Chore> {
     return this.http.post<Raw>(`${this.base}/${id}/complete`, { memberId }).pipe(
       map(this.normalize),
-      tap(item => { const next = this.subject.getValue().map(x => x.id === id ? item : x); this.subject.next(next); this.save(next); })
+      tap(item => {
+        const next = this.subject.getValue().map(x => x.id === id ? item : x);
+        this.subject.next(next);
+        this.save(next);
+      })
     );
   }
 
-//******************************************
-//* Normalization & local cache
-//******************************************
+  //******************************************
+  //* Normalization & local cache
+  //******************************************
   private normalize = (r: Raw): Chore => {
     const { _id, ...rest } = r;
     return { ...rest, id: _id ?? (r as any).id };
   };
 
-  private load(): Chore[] { 
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); 
-
-    } catch 
-    { return []; } 
+  private load(): Chore[] {
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
   }
-  private save(v: Chore[]) { 
-    localStorage.setItem(KEY, JSON.stringify(v)); 
+
+  private save(v: Chore[]) {
+    localStorage.setItem(KEY, JSON.stringify(v));
   }
 }
