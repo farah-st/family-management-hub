@@ -3,9 +3,19 @@
 
   <ng-container *ngIf="recipe; else notFound">
     <h1 class="text-2xl font-semibold mt-2">{{ recipe.title }}</h1>
+
+    <!-- 👇 NEW: image block -->
+    <div class="mt-3 mb-4" *ngIf="recipe.imageUrl as imgUrl">
+      <img
+        [src]="fullImageUrl(imgUrl)"
+        [alt]="recipe.title || 'Recipe image'"
+        class="w-full max-h-80 object-cover rounded-xl shadow-md"
+      />
+    </div>
+
     <p class="text-gray-700 mb-4">{{ recipe.description }}</p>
 
-    <div class="mb-4" *ngIf="recipe?.ingredients?.length">
+    <div class="mb-4" *ngIf="recipe.ingredients.length">
       <h2 class="font-medium">Ingredients</h2>
       <ul class="list-disc ml-6">
         <li *ngFor="let ing of recipe!.ingredients; let i = index">
@@ -21,8 +31,17 @@
     </div>
 
     <div class="flex gap-3">
-      <a [routerLink]="['/recipes', recipe.id, 'edit']" class="px-3 py-2 rounded-lg border">Edit</a>
-      <button (click)="addToGrocery()" class="px-3 py-2 rounded-lg border">Add to grocery list</button>
+      <a
+        [routerLink]="['/recipes', recipe.id, 'edit']"
+        class="px-3 py-2 rounded-lg border"
+        >Edit</a
+      >
+      <button
+        (click)="addToGrocery()"
+        class="px-3 py-2 rounded-lg border"
+      >
+        Add to grocery list
+      </button>
     </div>
   </ng-container>
 
@@ -30,3 +49,4 @@
     <h1 class="text-xl font-semibold text-red-600 mt-2">Recipe not found</h1>
   </ng-template>
 </div>
+

@@ -6,11 +6,24 @@ const bodyParser = require('body-parser');
 const { randomUUID } = require('crypto');
 const Recipe = require('./models/recipe.model.js');
 const Chore = require('./models/chore.model.js');
+const path = require('path');
+const multer = require('multer');
+
 
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 4000;
 
 const app = express();
+
+// ---------- File Upload config ----------
+const uploadDir = path.join(__dirname, 'uploads');
+
+const multerUpload = multer({
+  dest: uploadDir, // files go into /server/uploads
+});
+
+// Serve uploaded files statically: http://localhost:4000/uploads/<filename>
+app.use('/uploads', express.static(uploadDir));
 
 // ---------- Middleware ----------
 app.use(cors({
@@ -87,6 +100,19 @@ app.delete('/api/recipes/:id', async (req, res, next) => {
     res.status(204).end();
   } catch (e) { next(e); }
 });
+
+// Image upload route for recipes
+app.post('/api/recipes/upload', multerUpload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: 'No file uploaded' });
+  }
+
+  // URL that the Angular app can store & later use in <img [src]>
+  const url = `/uploads/${req.file.filename}`;
+
+  res.status(201).json({ url });
+});
+
 
 // ========== GROCERY (in-memory) ==========
 app.get('/api/grocery', (_req, res) => {

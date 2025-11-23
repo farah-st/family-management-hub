@@ -1,7 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { BehaviorSubject, Observable, of, map, tap } from 'rxjs';
+
+import { environment } from '../../environments/environment';
 import { Recipe } from '../models/recipe.model';
 
 const KEY = 'fmh_recipes_v2';
@@ -17,22 +18,27 @@ export class RecipeService {
 
   constructor() {
     // Prime cache from server; keep local data if server is empty or fails.
-    this.http.get<RawRecipe[]>(this.base).pipe(
-      map(arr => arr.map(this.normalizeId))
-    ).subscribe({
-      next: normalized => {
-        if (normalized.length > 0) {
-          this.recipesSubject.next(normalized);
-          this.save(normalized);
-        } else {
-          console.warn('Server returned 0 recipes — keeping local cache.');
-        }
-      },
-      error: (err) => {
-        console.warn('Server fetch failed — keeping local cache.', err);
-      }
-    });
+    this.http
+      .get<RawRecipe[]>(this.base)
+      .pipe(map(arr => arr.map(this.normalizeId)))
+      .subscribe({
+        next: normalized => {
+          if (normalized.length > 0) {
+            this.recipesSubject.next(normalized);
+            this.save(normalized);
+          } else {
+            console.warn('Server returned 0 recipes — keeping local cache.');
+          }
+        },
+        error: err => {
+          console.warn('Server fetch failed — keeping local cache.', err);
+        },
+      });
   }
+
+  /* =========================
+     Public API
+     ========================= */
 
   /** Observable list */
   list(): Observable<Recipe[]> {
@@ -52,7 +58,10 @@ export class RecipeService {
       map(this.normalizeId),
       tap(item => {
         if (item?.id) {
-          const next = [item, ...this.recipesSubject.getValue().filter(r => r.id !== item.id)];
+          const next = [
+            item,
+            ...this.recipesSubject.getValue().filter(r => r.id !== item.id),
+          ];
           this.recipesSubject.next(next);
           this.save(next);
         }
@@ -105,16 +114,37 @@ export class RecipeService {
     );
   }
 
-  // ---- helpers ----
-  private normalizeId = (r: RawRecipe): Recipe =>
-    ({ ...r, id: r._id ?? (r as any).id });
+  /** Upload a recipe image (image-only) and get back a URL */
+  uploadImage(file: File): Observable<{ url: string }> {
+    const formData = new FormData();
+    // 'image' MUST match multerUpload.single('image') on the server
+    formData.append('image', file);
+
+    return this.http.post<{ url: string }>(
+      '/api/recipes/upload',
+      formData
+    );
+  }
+
+  /* =========================
+     Private helpers
+     ========================= */
+
+  private normalizeId = (r: RawRecipe): Recipe => ({
+    ...r,
+    id: r._id ?? (r as any).id,
+  });
 
   private load(): Recipe[] {
-    try { return JSON.parse(localStorage.getItem(KEY) || '[]'); }
-    catch { return []; }
+    try {
+      return JSON.parse(localStorage.getItem(KEY) || '[]');
+    } catch {
+      return [];
+    }
   }
 
-  private save(recipes: Recipe[]) {
+  private save(recipes: Recipe[]): void {
     localStorage.setItem(KEY, JSON.stringify(recipes));
   }
+
 }
