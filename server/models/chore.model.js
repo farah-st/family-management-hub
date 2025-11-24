@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
 const recurrenceSchema = new mongoose.Schema(
   {
     freq: {
       type: String,
-      enum: ['DAILY', 'WEEKLY', 'MONTHLY'],
+      enum: ["DAILY", "WEEKLY", "MONTHLY"],
     },
     byDay: [Number],
     interval: {
@@ -39,8 +39,8 @@ const choreSchema = new mongoose.Schema(
     notes: { type: String },
     priority: {
       type: String,
-      enum: ['low', 'med', 'high'],
-      default: 'med',
+      enum: ["low", "med", "high"],
+      default: "med",
     },
     dueDate: { type: Date },
     assignments: {
@@ -61,4 +61,6 @@ const choreSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Chore', choreSchema);
+const Chore = mongoose.model("Chore", choreSchema);
+
+export default Chore;
