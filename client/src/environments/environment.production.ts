@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://your-production-domain.com/api',
-  graphqlUrl: 'https://your-production-domain.com/graphql'
+  apiUrl: 'https://family-management-hub.onrender.com/api',
+  graphqlUrl: 'https://family-management-hub.onrender.com/graphql'
 };
 
