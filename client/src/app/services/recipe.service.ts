@@ -117,11 +117,10 @@ export class RecipeService {
   /** Upload a recipe image (image-only) and get back a URL */
   uploadImage(file: File): Observable<{ url: string }> {
     const formData = new FormData();
-    // 'image' MUST match multerUpload.single('image') on the server
     formData.append('image', file);
 
     return this.http.post<{ url: string }>(
-      '/api/recipes/upload',
+      `${environment.apiUrl}/recipes/upload`,
       formData
     );
   }
