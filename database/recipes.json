@@ -1,22 +1,199 @@
 [
   {
-    "title": "Chicken Alfredo Pasta",
+    "title": "Chicken Tacos",
+    "description": "Easy weeknight chicken tacos.",
+    "imageUrl": "",
     "ingredients": [
-      { "name": "Chicken breast", "amount": "2 pcs" },
-      { "name": "Fettuccine pasta", "amount": "200g" },
-      { "name": "Alfredo sauce", "amount": "1 cup" }
-    ],
-    "estimatedCost": 12,
-    "nutrition": { "calories": 600, "protein": 40 }
+      { "name": "Chicken breast", "qty": "1 lb" },
+      { "name": "Tortillas", "qty": "8" },
+      { "name": "Taco seasoning", "qty": "1 packet" }
+    ]
   },
   {
-    "title": "Veggie Stir Fry",
+    "title": "Pancakes",
+    "description": "Soft and fluffy pancakes.",
+    "imageUrl": "",
     "ingredients": [
-      { "name": "Broccoli", "amount": "1 cup" },
-      { "name": "Carrots", "amount": "1 cup" },
-      { "name": "Soy sauce", "amount": "2 tbsp" }
-    ],
-    "estimatedCost": 8,
-    "nutrition": { "calories": 300, "protein": 12 }
+      { "name": "Flour", "qty": "1 cup" },
+      { "name": "Eggs", "qty": "2" },
+      { "name": "Milk", "qty": "1 cup" }
+    ]
+  },
+  {
+    "title": "Spaghetti Bolognese",
+    "description": "Classic Italian meat sauce pasta.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Ground beef", "qty": "1 lb" },
+      { "name": "Tomato sauce", "qty": "1 jar" },
+      { "name": "Spaghetti", "qty": "1 pack" }
+    ]
+  },
+  {
+    "title": "Fried Rice",
+    "description": "Simple fried rice with veggies.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Rice", "qty": "2 cups cooked" },
+      { "name": "Eggs", "qty": "2" },
+      { "name": "Mixed vegetables", "qty": "1 cup" }
+    ]
+  },
+  {
+    "title": "Beef Stir Fry",
+    "description": "Quick stir-fried beef and vegetables.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Beef strips", "qty": "1 lb" },
+      { "name": "Soy sauce", "qty": "3 tbsp" },
+      { "name": "Bell peppers", "qty": "2" }
+    ]
+  },
+  {
+    "title": "Grilled Cheese",
+    "description": "Classic grilled cheese sandwich.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Bread slices", "qty": "2" },
+      { "name": "Cheddar cheese", "qty": "2 slices" },
+      { "name": "Butter", "qty": "1 tbsp" }
+    ]
+  },
+  {
+    "title": "Quesadillas",
+    "description": "Simple cheese quesadillas.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Tortillas", "qty": "2" },
+      { "name": "Shredded cheese", "qty": "1 cup" }
+    ]
+  },
+  {
+    "title": "Chicken Soup",
+    "description": "Comforting chicken and veggie soup.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Chicken thighs", "qty": "1 lb" },
+      { "name": "Carrots", "qty": "2" },
+      { "name": "Potatoes", "qty": "2" }
+    ]
+  },
+  {
+    "title": "Mac and Cheese",
+    "description": "Creamy classic mac and cheese.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Macaroni", "qty": "2 cups" },
+      { "name": "Cheddar cheese", "qty": "2 cups" },
+      { "name": "Milk", "qty": "1 cup" }
+    ]
+  },
+  {
+    "title": "Burrito Bowls",
+    "description": "Healthy chicken and rice bowls.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Chicken", "qty": "1 lb" },
+      { "name": "Rice", "qty": "1 cup" },
+      { "name": "Black beans", "qty": "1 can" }
+    ]
+  },
+  {
+    "title": "Tuna Salad",
+    "description": "Easy protein-packed tuna mix.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Canned tuna", "qty": "2 cans" },
+      { "name": "Mayo", "qty": "2 tbsp" },
+      { "name": "Celery", "qty": "1 stalk" }
+    ]
+  },
+  {
+    "title": "Avocado Toast",
+    "description": "Simple avocado toast breakfast.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Bread", "qty": "1 slice" },
+      { "name": "Avocado", "qty": "1/2" }
+    ]
+  },
+  {
+    "title": "Omelette",
+    "description": "3-ingredient quick omelette.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Eggs", "qty": "3" },
+      { "name": "Cheese", "qty": "1/4 cup" },
+      { "name": "Spinach", "qty": "1 handful" }
+    ]
+  },
+  {
+    "title": "BBQ Chicken",
+    "description": "Oven baked BBQ chicken.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Chicken drumsticks", "qty": "6" },
+      { "name": "BBQ sauce", "qty": "1 cup" }
+    ]
+  },
+  {
+    "title": "Salmon Rice Bowl",
+    "description": "TikTok style salmon bowl.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Salmon", "qty": "1 fillet" },
+      { "name": "Rice", "qty": "1 cup" },
+      { "name": "Soy sauce", "qty": "1 tbsp" }
+    ]
+  },
+  {
+    "title": "Baked Potatoes",
+    "description": "Fluffy oven baked potatoes.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Russet potatoes", "qty": "3" },
+      { "name": "Butter", "qty": "2 tbsp" }
+    ]
+  },
+  {
+    "title": "Chicken Alfredo",
+    "description": "Creamy pasta with chicken.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Chicken breast", "qty": "1 lb" },
+      { "name": "Pasta", "qty": "1 box" },
+      { "name": "Alfredo sauce", "qty": "1 jar" }
+    ]
+  },
+  {
+    "title": "Veggie Wrap",
+    "description": "Healthy vegetable wrap.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Tortilla", "qty": "1" },
+      { "name": "Lettuce", "qty": "1 cup" },
+      { "name": "Hummus", "qty": "2 tbsp" }
+    ]
+  },
+  {
+    "title": "Chili",
+    "description": "Hearty beef and bean chili.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Ground beef", "qty": "1 lb" },
+      { "name": "Beans", "qty": "1 can" },
+      { "name": "Tomato", "qty": "1 can" }
+    ]
+  },
+  {
+    "title": "French Toast",
+    "description": "Sweet breakfast french toast.",
+    "imageUrl": "",
+    "ingredients": [
+      { "name": "Bread", "qty": "2 slices" },
+      { "name": "Eggs", "qty": "2" },
+      { "name": "Milk", "qty": "1/4 cup" }
+    ]
   }
 ]
+

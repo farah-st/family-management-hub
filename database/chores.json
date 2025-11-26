@@ -1,0 +1,22 @@
+[
+  { "title": "Wash dishes", "notes": "Dinner dishes", "priority": "med", "active": true },
+  { "title": "Clean living room", "notes": "", "priority": "low", "active": true },
+  { "title": "Take out trash", "notes": "Nightly", "priority": "med", "active": true },
+  { "title": "Vacuum hallway", "notes": "", "priority": "low", "active": true },
+  { "title": "Wipe kitchen counters", "notes": "After meals", "priority": "med", "active": true },
+  { "title": "Sweep kitchen", "notes": "Daily", "priority": "med", "active": true },
+  { "title": "Fold laundry", "notes": "One load", "priority": "high", "active": true },
+  { "title": "Clean bathroom sink", "notes": "", "priority": "low", "active": true },
+  { "title": "Clean toilet", "notes": "Weekly", "priority": "high", "active": true },
+  { "title": "Mop floors", "notes": "Kitchen + hallway", "priority": "high", "active": true },
+  { "title": "Organize pantry", "notes": "", "priority": "low", "active": true },
+  { "title": "Water plants", "notes": "Every 3 days", "priority": "low", "active": true },
+  { "title": "Load dishwasher", "notes": "", "priority": "med", "active": true },
+  { "title": "Unload dishwasher", "notes": "", "priority": "med", "active": true },
+  { "title": "Make bed", "notes": "Daily", "priority": "low", "active": true },
+  { "title": "Clean mirrors", "notes": "", "priority": "low", "active": true },
+  { "title": "Dust shelves", "notes": "", "priority": "low", "active": true },
+  { "title": "Pick up toys", "notes": "Living room", "priority": "med", "active": true },
+  { "title": "Take recycling out", "notes": "Fridays", "priority": "low", "active": true },
+  { "title": "Clean microwave", "notes": "", "priority": "low", "active": true }
+]
