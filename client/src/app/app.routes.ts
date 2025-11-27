@@ -4,6 +4,7 @@ import { of } from 'rxjs';
 
 import { RecipeService } from './services/recipe.service';
 import type { Recipe } from './models/recipe.model';
+import { WeeklyPlanComponent } from './meal-plan/weekly-plan/weekly-plan.component';
 
 /* =========================
    RESOLVERS
@@ -127,6 +128,15 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
     ],
   },
 
+  /* ---------- Weekly plan feature ---------- */
+  {
+  path: 'meal-plan',
+  loadComponent: () =>
+    import('./meal-plan/weekly-plan/weekly-plan.component').then(
+      (m) => m.WeeklyPlanComponent
+    ),
+},
+
   /* ---------- 404 (always last) ---------- */
   {
     path: '**',
@@ -134,5 +144,8 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
     loadComponent: () =>
       import('./shared/not-found/not-found.component')
         .then(m => m.NotFoundComponent),
+  },
+  { 
+    path: 'meal-plan', component: WeeklyPlanComponent 
   },
 ];

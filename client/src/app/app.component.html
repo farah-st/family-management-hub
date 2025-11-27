@@ -1,25 +1,57 @@
 <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
-  <nav class="mx-auto max-w-5xl px-4 flex items-center gap-4 h-14">
-    <a routerLink="/" class="font-semibold tracking-tight">Family Hub</a>
-    <div class="ml-auto flex items-center gap-2 text-sm">
+  <nav class="mx-auto max-w-5xl px-4 flex items-center gap-6 h-14">
+
+    <!-- Logo / Brand -->
+    <a routerLink="/" class="font-semibold tracking-tight text-lg">
+      Family Hub
+    </a>
+
+    <!-- Primary navigation -->
+    <div class="flex items-center gap-2 text-sm">
       <a
         routerLink="/recipes"
-        routerLinkActive="font-medium bg-gray-100"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
+        routerLinkActive="active-tab"
+        class="nav-tab"
         >Recipes</a
       >
+
       <a
         routerLink="/grocery-list"
-        routerLinkActive="font-medium bg-gray-100"
-        class="px-3 py-1.5 rounded-lg hover:bg-gray-100 transition"
-        >Grocery List</a
+        routerLinkActive="active-tab"
+        class="nav-tab"
+        >Grocery</a
       >
+
+      <a
+        routerLink="/chores"
+        routerLinkActive="active-tab"
+        class="nav-tab"
+        >Chores</a
+      >
+
+      <a
+        routerLink="/meal-plan"
+        routerLinkActive="active-tab"
+        class="nav-tab"
+        >Meal Plan</a
+      >
+
+      <a
+        routerLink="/calendar"
+        routerLinkActive="active-tab"
+        class="nav-tab"
+        >Calendar</a
+      >
+    </div>
+
+    <!-- Right side (CTA) -->
+    <div class="ml-auto flex items-center gap-2">
       <a
         routerLink="/recipes/new"
-        class="px-3 py-1.5 rounded-lg bg-black text-white hover:opacity-90 transition"
-        >+ New Recipe</a
+        class="primary-cta"
       >
+        + New Recipe
+      </a>
     </div>
   </nav>
 </header>

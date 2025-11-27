@@ -1,0 +1,86 @@
+<div class="page">
+  <header class="page__header">
+    <h1 class="page__title">Weekly Meal Plan</h1>
+
+    <div class="page__controls">
+      <button type="button" (click)="prevWeek()">← Previous</button>
+      <button type="button" (click)="resetWeek()">This Week</button>
+      <button type="button" (click)="nextWeek()">Next →</button>
+    </div>
+  </header>
+
+  <ng-container *ngIf="vm$ | async as vm">
+    <p class="page__subtitle">
+      Week of
+      <strong>{{ vm.plan.weekStartIso }}</strong>
+    </p>
+
+    <div class="grid">
+      <!-- Header row -->
+      <div class="grid__corner"></div>
+      <div class="grid__day-header" *ngFor="let d of vm.plan.days; trackBy: trackByDayIndex">
+        <div class="grid__day-label">{{ d.label }}</div>
+        <div class="grid__day-date">{{ d.dateIso }}</div>
+      </div>
+
+      <!-- Rows for each slot -->
+      <ng-container *ngFor="let slot of slots">
+        <div class="grid__row-label">
+          {{ slot | titlecase }}
+        </div>
+
+        <div
+          class="grid__cell"
+          *ngFor="let d of vm.plan.days; let i = index; trackBy: trackByDayIndex"
+        >
+          <ng-container
+            *ngIf="d.slots[slot] as recipeId; else emptyCell"
+          >
+            <div class="grid__cell-content">
+              <div class="grid__recipe-title">
+                {{ vm.recipesById[recipeId] ? vm.recipesById[recipeId].title : 'Unknown recipe' }}
+              </div>
+              <div class="grid__cell-actions">
+                <button type="button" (click)="openPicker(i, slot, recipeId)">Change</button>
+                <button type="button" (click)="clearCell(i, slot)">Clear</button>
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-template #emptyCell>
+            <button
+              type="button"
+              class="grid__add-btn"
+              (click)="openPicker(i, slot, null)"
+            >
+              + Add recipe
+            </button>
+          </ng-template>
+        </div>
+      </ng-container>
+
+      <!-- optional: you can add a footer row for snacks later -->
+    </div>
+
+    <!-- Simple picker "modal" -->
+    <div class="picker" *ngIf="picker.open">
+      <div class="picker__overlay" (click)="closePicker()"></div>
+
+      <div class="picker__panel">
+        <h2>Select recipe</h2>
+
+        <select [(ngModel)]="picker.selectedRecipeId">
+          <option value="">-- None --</option>
+          <option *ngFor="let r of vm.recipes" [value]="r.id">
+            {{ r.title }}
+          </option>
+        </select>
+
+        <div class="picker__buttons">
+          <button type="button" (click)="savePicker()">Save</button>
+          <button type="button" (click)="closePicker()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
