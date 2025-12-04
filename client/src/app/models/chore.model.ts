@@ -2,32 +2,47 @@ export type Priority = 'low' | 'med' | 'high';
 
 export interface ChoreAssignment {
   memberId: string;
-  dueDate?: string; // ISO
-  recurrence?: { freq: 'DAILY' | 'WEEKLY' | 'MONTHLY'; byDay?: number[]; interval?: number };
+  dueDate?: string | null; 
+  recurrence?: {
+    freq: 'DAILY' | 'WEEKLY' | 'MONTHLY';
+    byDay?: number[];
+    interval?: number;
+  };
   points?: number;
 }
 
 export interface ChoreCompletion {
-  on: string;      // ISO
+  on: string;  // ISO
   memberId?: string;
 }
 
-export interface Chore {
-  id: string;      // normalized from _id
-  title: string;
-  notes?: string;
-  priority: Priority;
-
-  // NEW: matches server's top-level dueDate field
-  dueDate?: string | null;
-
-  // Future: richer structure, still okay if backend doesn't send these yet
-  assignments: ChoreAssignment[];
-  completed: ChoreCompletion[];
-  active: boolean;
+// AssignedTo fields must be optional because server allows missing ones
+export interface AssignedTo {
+  name?: string;
+  role?: string;
 }
 
+export interface Chore {
+  id: string;
+  title: string;
+  notes?: string;
 
+  priority: Priority;
+  dueDate?: string | null;
 
+  rewardAmount?: number | null;
+  rewardCurrency?: string | null;
 
+  assignedTo?: AssignedTo | null;
 
+  assignments?: ChoreAssignment[];
+  completed?: ChoreCompletion[];
+
+  active: boolean;
+
+  // Extras that exist in Mongo:
+  assignee?: string | null;
+  categoryId?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}

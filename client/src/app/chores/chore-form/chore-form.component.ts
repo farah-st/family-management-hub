@@ -21,89 +21,12 @@ import type { Chore } from '../../models/chore.model';
   selector: 'app-chore-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  template: `
-    <form class="chore-form" [formGroup]="form" (ngSubmit)="save()">
-
-      <h1 class="chore-form__title">
-        {{ isEdit ? 'Edit' : 'New' }} Chore
-      </h1>
-
-      <!-- Title -->
-      <label class="chore-form__field">
-        <span class="chore-form__label">Title</span>
-        <input
-          class="chore-form__input"
-          placeholder="Title"
-          formControlName="title"
-        />
-        <span
-          class="chore-form__error"
-          *ngIf="form.get('title')?.touched && form.get('title')?.invalid"
-        >
-          Title is required
-        </span>
-      </label>
-
-      <!-- Notes -->
-      <label class="chore-form__field">
-        <span class="chore-form__label">Notes</span>
-        <textarea
-          class="chore-form__input chore-form__input--textarea"
-          placeholder="Notes"
-          formControlName="notes"
-          rows="3"
-        ></textarea>
-      </label>
-
-      <!-- Priority -->
-      <label class="chore-form__field">
-        <span class="chore-form__label">Priority</span>
-        <select class="chore-form__input" formControlName="priority">
-          <option value="low">Low</option>
-          <option value="med">Medium</option>
-          <option value="high">High</option>
-        </select>
-      </label>
-
-      <!-- Due Date -->
-      <label class="chore-form__field">
-        <span class="chore-form__label">Due date (optional)</span>
-        <input
-          class="chore-form__input"
-          type="date"
-          formControlName="dueDate"
-        />
-      </label>
-
-      <!-- Actions -->
-      <div class="chore-form__actions">
-        <button
-          class="btn btn--primary"
-          type="submit"
-          [disabled]="form.invalid || loading"
-        >
-          {{ loading ? 'Saving...' : 'Save' }}
-        </button>
-        <button
-          type="button"
-          class="btn btn--ghost"
-          (click)="cancel()"
-        >
-          Cancel
-        </button>
-      </div>
-
-      <!-- Simple error message (optional improvement) -->
-      <p class="chore-form__global-error" *ngIf="error">
-        {{ error }}
-      </p>
-    </form>
-  `,
+  templateUrl: './chore-form.component.html',
   styleUrls: ['./chore-form.component.scss'],
 })
 
 //******************************************
-//* Dependecies and state in the class
+//* Dependencies and state in the class
 //******************************************
 export class ChoreFormComponent implements OnInit {
   private fb = inject(FormBuilder);
@@ -117,6 +40,16 @@ export class ChoreFormComponent implements OnInit {
     notes: [''],
     priority: ['med'],
     dueDate: [''], // yyyy-MM-dd
+
+    // NEW: reward fields
+    rewardAmount: [0],
+    rewardCurrency: ['USD'],
+
+    // NEW: assignedTo nested group
+    assignedTo: this.fb.group({
+      name: [''],
+      role: [''],
+    }),
   });
 
   // UI / state flags
@@ -128,9 +61,9 @@ export class ChoreFormComponent implements OnInit {
   private id: string | null = null;
   private justSaved = false; // used by the CanDeactivate guard
 
-//******************************************
-//* Loading existing chore in edit mode
-//******************************************
+  //******************************************
+  //* Loading existing chore in edit mode
+  //******************************************
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     this.isEdit = !!this.id;
@@ -140,6 +73,7 @@ export class ChoreFormComponent implements OnInit {
       this.svc.getById(this.id).subscribe({
         next: (c) => {
           if (!c) return;
+
           this.form.patchValue(
             {
               title: c.title,
@@ -150,9 +84,20 @@ export class ChoreFormComponent implements OnInit {
                 c.dueDate?.slice(0, 10) ??
                 c.assignments?.[0]?.dueDate?.slice(0, 10) ??
                 '',
+
+              // NEW: reward fields
+              rewardAmount: c.rewardAmount ?? 0,
+              rewardCurrency: c.rewardCurrency ?? 'USD',
+
+              // NEW: assignedTo
+              assignedTo: {
+                name: c.assignedTo?.name ?? '',
+                role: c.assignedTo?.role ?? '',
+              },
             },
             { emitEvent: false }
           );
+
           this.form.markAsPristine();
         },
         error: () => {
@@ -165,24 +110,38 @@ export class ChoreFormComponent implements OnInit {
     }
   }
 
-//******************************************
-//* Create or update the chore
-//******************************************
+  //******************************************
+  //* Create or update the chore
+  //******************************************
   save(): void {
     if (this.form.invalid || this.loading) return;
 
     this.error = null;
     this.loading = true;
 
-    const dueDate: string | null = this.form.value.dueDate || null;
+    const value = this.form.value as any;
+    const dueDate: string | null = value.dueDate || null;
 
-    // Base body for create/update
     const body: Partial<Chore> & { dueDate?: string | null } = {
-      title: this.form.value.title!,
-      notes: this.form.value.notes ?? '',
-      priority: this.form.value.priority ?? 'med',
+      title: value.title!,
+      notes: value.notes ?? '',
+      priority: value.priority ?? 'med',
       dueDate,
+
+      // NEW: reward fields
+      rewardAmount: value.rewardAmount ?? 0,
+      rewardCurrency: value.rewardCurrency ?? 'USD',
     };
+
+    // NEW: only send assignedTo if at least name or role is filled
+    const name = value.assignedTo?.name?.trim?.();
+    const role = value.assignedTo?.role?.trim?.();
+    if (name || role) {
+      body.assignedTo = {
+        name: name ?? '',
+        role: role ?? '',
+      } as any;
+    }
 
     // Only set assignments for NEW chores (optional improvement)
     if (!this.isEdit) {
@@ -212,21 +171,20 @@ export class ChoreFormComponent implements OnInit {
     });
   }
 
-//******************************************
-//* Backing out safely
-//******************************************
+  //******************************************
+  //* Backing out safely
+  //******************************************
   cancel(): void {
     // Mark as pristine so the guard doesn't prompt, then navigate away
     this.form.markAsPristine();
     this.router.navigate(['..'], { relativeTo: this.route });
   }
 
-//******************************************
-//* Hook for the CanDeactivate guard
-//******************************************
+  //******************************************
+  //* Hook for the CanDeactivate guard
+  //******************************************
   // Used by CanDeactivate guard
   isDirty(): boolean {
     return this.form.dirty && !this.justSaved;
   }
 }
-

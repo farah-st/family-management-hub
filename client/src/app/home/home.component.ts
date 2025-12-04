@@ -35,8 +35,8 @@ import type { Chore } from '../models/chore.model';
                 <li *ngFor="let c of chores" class="item-row">
                   <span
                     class="status-dot"
-                    [class.status-complete]="c.completed.length"
-                    [class.status-pending]="!c.completed.length"
+                    [class.status-complete]="(c.completed?.length ?? 0) > 0"
+                    [class.status-pending]="(c.completed?.length ?? 0) === 0"
                   ></span>
 
                   <a

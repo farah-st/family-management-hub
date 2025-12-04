@@ -9,42 +9,69 @@
   <ng-container *ngIf="vm$ | async as vm; else loading">
     <ng-container *ngIf="vm.length; else empty">
       <ul class="grid gap-2">
-      <li
-        *ngFor="let c of vm; trackBy: trackById"
-        class="chore-item"
-      >
-        <button
-          type="button"
-          (click)="complete(c)"
-          class="done-btn"
+        <li
+          *ngFor="let c of vm; trackBy: trackById"
+          class="chore-item"
         >
-          Done
-        </button>
+          <!-- Complete button -->
+          <button
+            type="button"
+            (click)="complete(c)"
+            class="done-btn"
+          >
+            Done
+          </button>
 
-        <a [routerLink]="[c.id]" class="chore-title">
-          {{ c.title }}
-        </a>
+          <!-- Main content -->
+          <div class="flex-1 min-w-0">
+            <!-- Title + due date + priority -->
+            <div class="flex items-center gap-2">
+              <a [routerLink]="[c.id]" class="chore-title">
+                {{ c.title }}
+              </a>
 
-        <span
-          *ngIf="firstDueDate(c) as due"
-          class="ml-2 text-xs text-slate-500"
-        >
-          Due {{ due | date: 'MMM d' }}
-        </span>
+              <span
+                *ngIf="firstDueDate(c) as due"
+                class="ml-2 text-xs text-slate-500"
+              >
+                Due {{ due | date: 'MMM d' }}
+              </span>
 
-        <span class="priority-pill">
-          {{ c.priority }}
-        </span>
+              <span class="priority-pill">
+                {{ c.priority }}
+              </span>
+            </div>
 
-        <button
-          type="button"
-          class="delete-btn"
-          (click)="remove(c)"
-        >
-          Delete
-        </button>
-      </li>
+            <!-- Assignee + reward row -->
+            <div class="mt-1 text-xs text-slate-600 flex flex-wrap gap-2">
+              <!-- Assignee -->
+              <ng-container *ngIf="c.assignedTo as a">
+                <span *ngIf="a.name" class="chore-assignee">
+                  Assigned to: {{ a.name }}
+                  <span *ngIf="a.role">({{ a.role }})</span>
+                </span>
+              </ng-container>
 
+              <!-- Reward -->
+              <span
+                *ngIf="c.rewardAmount && c.rewardAmount > 0"
+                class="chore-reward"
+              >
+                Reward:
+                {{ c.rewardAmount | currency : (c.rewardCurrency || 'USD') : 'code' : '1.2-2' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Delete button -->
+          <button
+            type="button"
+            class="delete-btn"
+            (click)="remove(c)"
+          >
+            Delete
+          </button>
+        </li>
       </ul>
     </ng-container>
   </ng-container>
@@ -64,3 +91,6 @@
     </div>
   </ng-template>
 </div>
+
+
+

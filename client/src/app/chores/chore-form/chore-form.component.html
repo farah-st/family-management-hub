@@ -43,6 +43,48 @@
     />
   </label>
 
+  <!-- Reward section -->
+  <div class="chore-form__field">
+    <span class="chore-form__label">Reward (optional)</span>
+    <div class="chore-form__reward-row">
+      <select
+        class="chore-form__input chore-form__input--select-currency"
+        formControlName="rewardCurrency"
+      >
+        <option value="USD">USD ($)</option>
+        <option value="MXN">MXN ($)</option>
+      </select>
+
+      <input
+        class="chore-form__input chore-form__input--reward-amount"
+        type="number"
+        min="0"
+        step="0.25"
+        placeholder="0.00"
+        formControlName="rewardAmount"
+      />
+    </div>
+  </div>
+
+  <!-- Assigned to section -->
+  <fieldset class="chore-form__field">
+    <legend class="chore-form__label">Assigned to (optional)</legend>
+
+    <div formGroupName="assignedTo">
+      <input
+        class="chore-form__input"
+        placeholder="Name (e.g. Sofía)"
+        formControlName="name"
+      />
+
+      <input
+        class="chore-form__input"
+        placeholder="Role (e.g. Child, Mom, Dad)"
+        formControlName="role"
+      />
+    </div>
+  </fieldset>
+
   <div class="chore-form__actions">
     <button
       class="btn btn--primary"

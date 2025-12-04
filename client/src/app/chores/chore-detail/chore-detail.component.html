@@ -1,1 +1,61 @@
-<p>chore-detail works!</p>
+<div class="p-4 max-w-2xl mx-auto" *ngIf="chore$ | async as c">
+
+  <a routerLink="/chores" class="underline text-sm text-slate-600">&larr; Back to chores</a>
+
+  <h1 class="text-2xl font-semibold mt-3">
+    {{ c.title }}
+  </h1>
+
+  <!-- Priority + Due Date -->
+  <div class="mt-1 text-sm text-slate-600 flex items-center gap-3">
+    <span class="priority-pill">{{ c.priority }}</span>
+
+    <span *ngIf="c.dueDate">
+      Due: {{ c.dueDate | date:'MMM d, yyyy' }}
+    </span>
+  </div>
+
+  <!-- Assignee + Reward -->
+  <div class="mt-3 text-sm text-slate-700 space-y-1">
+
+    <!-- Assigned -->
+    <div *ngIf="c.assignedTo as a">
+      <span class="font-medium">Assigned to:</span>
+      {{ a.name || 'Unassigned' }}
+      <span *ngIf="a.role">({{ a.role }})</span>
+    </div>
+
+    <!-- Reward -->
+    <div *ngIf="c.rewardAmount && c.rewardAmount > 0">
+      <span class="font-medium">Reward:</span>
+      {{ c.rewardAmount | currency : (c.rewardCurrency || 'USD') : 'code' : '1.2-2' }}
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div *ngIf="c.notes" class="mt-4 bg-slate-50 p-3 rounded-lg border text-sm text-slate-700">
+    {{ c.notes }}
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-6 flex gap-2">
+    <a [routerLink]="['/chores', c.id, 'edit']"
+       class="px-4 py-2 rounded-lg bg-black text-white">
+      Edit
+    </a>
+
+    <button
+      class="px-4 py-2 rounded-lg bg-red-600 text-white"
+      (click)="delete(c)"
+    >
+      Delete
+    </button>
+  </div>
+
+</div>
+
+<!-- Loading state -->
+<div *ngIf="!(chore$ | async)" class="p-4">
+  Loading chore…
+</div>
+

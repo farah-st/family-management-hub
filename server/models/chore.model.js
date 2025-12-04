@@ -33,6 +33,15 @@ const completionSchema = new mongoose.Schema(
   { _id: false }
 );
 
+// Inline "assigned to" info (name + role)
+const assignedToSchema = new mongoose.Schema(
+  {
+    name: { type: String, trim: true }, // e.g. "Sofía"
+    role: { type: String, trim: true }, // e.g. "Child", "Mom", "Dad"
+  },
+  { _id: false }
+);
+
 const choreSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, trim: true },
@@ -43,6 +52,20 @@ const choreSchema = new mongoose.Schema(
       default: "med",
     },
     dueDate: { type: Date },
+
+    // Monetary reward for completing this chore
+    rewardAmount: {
+      type: Number,
+      default: 0,
+    },
+    rewardCurrency: {
+      type: String,
+      default: "USD",
+      trim: true,
+      uppercase: true, // ensure ISO-style codes like "USD", "MXN"
+    },
+
+    // Existing richer structure
     assignments: {
       type: [assignmentSchema],
       default: [],
@@ -55,6 +78,14 @@ const choreSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    // Single assigned member with name + role
+    assignedTo: {
+      type: assignedToSchema,
+      default: undefined, // field optional for older docs
+    },
+
+    // Legacy fields
     assignee: String,
     categoryId: String,
   },

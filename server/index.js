@@ -156,6 +156,7 @@ app.delete("/api/grocery", (_req, res) => {
 });
 
 // ========== CHORES (Mongo-backed) ==========
+// ========== CHORES (Mongo-backed) ==========
 app.get("/api/chores", async (_req, res, next) => {
   try {
     const items = await Chore.find().sort({ createdAt: -1 });
@@ -173,11 +174,41 @@ app.post("/api/chores", async (req, res, next) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
+    // --- Coerce rewardAmount from string/number to a proper Number ---
+    const rawAmount = body.rewardAmount;
+    let rewardAmount = 0;
+    if (rawAmount !== undefined && rawAmount !== null && rawAmount !== "") {
+      const n = Number(rawAmount);
+      rewardAmount = Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+
+    const rewardCurrency =
+      typeof body.rewardCurrency === "string" &&
+      body.rewardCurrency.trim().length > 0
+        ? body.rewardCurrency.trim().toUpperCase()
+        : "USD";
+
+    // assignedTo (optional)
+    let assignedTo;
+    if (body.assignedTo && typeof body.assignedTo === "object") {
+      const name = (body.assignedTo.name ?? "").trim();
+      const role = (body.assignedTo.role ?? "").trim();
+      if (name || role) {
+        assignedTo = { name, role };
+      }
+    }
+
     const doc = await Chore.create({
       title,
       notes: body.notes ?? "",
       priority: body.priority ?? "med",
       dueDate: body.dueDate ?? null,
+
+      // Reward + assignee info
+      rewardAmount,
+      rewardCurrency,
+      assignedTo,
+
       assignments: Array.isArray(body.assignments) ? body.assignments : [],
       completed: Array.isArray(body.completed) ? body.completed : [],
       active: typeof body.active === "boolean" ? body.active : true,
@@ -199,6 +230,29 @@ app.put("/api/chores/:id", async (req, res, next) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
+    // --- Coerce rewardAmount on update as well ---
+    if (
+      patch.rewardAmount !== undefined &&
+      patch.rewardAmount !== null &&
+      patch.rewardAmount !== ""
+    ) {
+      const n = Number(patch.rewardAmount);
+      patch.rewardAmount = Number.isFinite(n) && n >= 0 ? n : 0;
+    }
+
+    // Normalize rewardCurrency
+    if (patch.rewardCurrency !== undefined && patch.rewardCurrency !== null) {
+      const cur = String(patch.rewardCurrency).trim();
+      patch.rewardCurrency = cur ? cur.toUpperCase() : "USD";
+    }
+
+    // Normalize assignedTo
+    if (patch.assignedTo && typeof patch.assignedTo === "object") {
+      const name = (patch.assignedTo.name ?? "").trim();
+      const role = (patch.assignedTo.role ?? "").trim();
+      patch.assignedTo = name || role ? { name, role } : undefined;
+    }
+
     const updated = await Chore.findByIdAndUpdate(
       req.params.id,
       { $set: patch },
@@ -210,41 +264,6 @@ app.put("/api/chores/:id", async (req, res, next) => {
     }
 
     res.json(updated);
-  } catch (e) {
-    next(e);
-  }
-});
-
-// matches your service.complete(id)
-app.post("/api/chores/:id/complete", async (req, res, next) => {
-  try {
-    const { id } = req.params;
-    const { memberId } = req.body ?? {};
-
-    const chore = await Chore.findById(id);
-    if (!chore) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    chore.completed.push({
-      on: new Date(),
-      memberId: memberId || undefined,
-    });
-
-    await chore.save();
-    res.json(chore);
-  } catch (e) {
-    next(e);
-  }
-});
-
-app.delete("/api/chores/:id", async (req, res, next) => {
-  try {
-    const removed = await Chore.findByIdAndDelete(req.params.id);
-    if (!removed) {
-      return res.status(404).json({ message: "Not found" });
-    }
-    res.status(204).end();
   } catch (e) {
     next(e);
   }
