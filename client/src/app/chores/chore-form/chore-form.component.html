@@ -44,16 +44,19 @@
   </label>
 
   <!-- Reward section -->
-  <div class="chore-form__field">
-    <span class="chore-form__label">Reward (optional)</span>
-    <div class="chore-form__reward-row">
-      <select
-        class="chore-form__input chore-form__input--select-currency"
-        formControlName="rewardCurrency"
-      >
-        <option value="USD">USD ($)</option>
-        <option value="MXN">MXN ($)</option>
-      </select>
+  <div class="chore-form__reward-row">
+    <select
+      class="chore-form__input chore-form__input--select-currency"
+      formControlName="rewardCurrency"
+    >
+      <option value="USD">USD ($)</option>
+      <option value="MXN">MXN ($)</option>
+    </select>
+
+    <div class="reward-input-wrapper">
+      <span class="reward-prefix">
+        {{ form.value.rewardCurrency === 'USD' ? '$' : '$' }}
+      </span>
 
       <input
         class="chore-form__input chore-form__input--reward-amount"

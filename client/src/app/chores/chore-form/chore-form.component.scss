@@ -120,3 +120,32 @@
   background-color: #f3f4f6;
   border-color: #9ca3af;
 }
+
+/* Reward row layout */
+.chore-form__reward-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Wrapper so we can position the $ */
+.reward-input-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+/* The $ prefix inside the input */
+.reward-prefix {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6b7280; // gray-500
+  font-size: 0.9rem;
+}
+
+/* Extra left padding to make room for the $ */
+.chore-form__input--reward-amount {
+  padding-left: 2rem; // or 2.25rem if it feels tight
+}
