@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 
 import Recipe from "./models/recipe.model.js";
 import Chore from "./models/chore.model.js";
+import authRouter from "./routes/auth.js";
 
 // ---------- ESM __dirname shim ----------
 const __filename = fileURLToPath(import.meta.url);
@@ -19,21 +20,20 @@ const __dirname = path.dirname(__filename);
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 4000;
 
-// Allowed origins for CORS: comma-separated list in env, or default to localhost
+// Allowed CORS origins
 const allowedOrigins = process.env.ALLOWED_ORIGIN
   ? process.env.ALLOWED_ORIGIN.split(",").map((o) => o.trim())
   : ["http://localhost:4200"];
 
 const app = express();
 
-// ---------- File Upload config ----------
+// ---------- File Upload ----------
 const uploadDir = path.join(__dirname, "uploads");
 
 const multerUpload = multer({
-  dest: uploadDir, // files go into /server/uploads
+  dest: uploadDir,
 });
 
-// Serve uploaded files statically: http://<server>/uploads/<filename>
 app.use("/uploads", express.static(uploadDir));
 
 // ---------- Middleware ----------
@@ -44,12 +44,12 @@ app.use(
 );
 app.use(express.json());
 
-// ---------- Health / Root ----------
+// ---------- Health Check ----------
 app.get("/", (_req, res) => {
   res.json({ ok: true, service: "family-hub-api" });
 });
 
-// ---------- In-memory stores for fast dev ----------
+// ---------- In-memory Stores ----------
 let grocery = [];
 let categories = [
   { id: randomUUID(), name: "House", color: "#94a3b8" },
@@ -61,7 +61,9 @@ function newId() {
   return randomUUID();
 }
 
-// ========== RECIPES (Mongo-backed) ==========
+// ---------------------------------------------------------
+// ========== RECIPES (MongoDB) ==========
+// ---------------------------------------------------------
 app.get("/api/recipes", async (_req, res, next) => {
   try {
     const items = await Recipe.find().sort({ createdAt: -1 });
@@ -121,17 +123,17 @@ app.delete("/api/recipes/:id", async (req, res, next) => {
   }
 });
 
-// Image upload route for recipes
+// Image upload
 app.post("/api/recipes/upload", multerUpload.single("image"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ message: "No file uploaded" });
-  }
+  if (!req.file) return res.status(400).json({ message: "No file uploaded" });
 
   const url = `/uploads/${req.file.filename}`;
   res.status(201).json({ url });
 });
 
+// ---------------------------------------------------------
 // ========== GROCERY (in-memory) ==========
+// ---------------------------------------------------------
 app.get("/api/grocery", (_req, res) => {
   res.json(grocery);
 });
@@ -155,8 +157,9 @@ app.delete("/api/grocery", (_req, res) => {
   res.status(204).end();
 });
 
-// ========== CHORES (Mongo-backed) ==========
-// ========== CHORES (Mongo-backed) ==========
+// ---------------------------------------------------------
+// ========== CHORES (MongoDB) ==========
+// ---------------------------------------------------------
 app.get("/api/chores", async (_req, res, next) => {
   try {
     const items = await Chore.find().sort({ createdAt: -1 });
@@ -170,11 +173,8 @@ app.post("/api/chores", async (req, res, next) => {
   try {
     const body = req.body ?? {};
     const title = (body.title ?? "").trim();
-    if (!title) {
-      return res.status(400).json({ message: "Title is required" });
-    }
+    if (!title) return res.status(400).json({ message: "Title is required" });
 
-    // --- Coerce rewardAmount from string/number to a proper Number ---
     const rawAmount = body.rewardAmount;
     let rewardAmount = 0;
     if (rawAmount !== undefined && rawAmount !== null && rawAmount !== "") {
@@ -188,14 +188,11 @@ app.post("/api/chores", async (req, res, next) => {
         ? body.rewardCurrency.trim().toUpperCase()
         : "USD";
 
-    // assignedTo (optional)
     let assignedTo;
     if (body.assignedTo && typeof body.assignedTo === "object") {
       const name = (body.assignedTo.name ?? "").trim();
       const role = (body.assignedTo.role ?? "").trim();
-      if (name || role) {
-        assignedTo = { name, role };
-      }
+      if (name || role) assignedTo = { name, role };
     }
 
     const doc = await Chore.create({
@@ -204,7 +201,6 @@ app.post("/api/chores", async (req, res, next) => {
       priority: body.priority ?? "med",
       dueDate: body.dueDate ?? null,
 
-      // Reward + assignee info
       rewardAmount,
       rewardCurrency,
       assignedTo,
@@ -230,7 +226,6 @@ app.put("/api/chores/:id", async (req, res, next) => {
       return res.status(400).json({ message: "Title is required" });
     }
 
-    // --- Coerce rewardAmount on update as well ---
     if (
       patch.rewardAmount !== undefined &&
       patch.rewardAmount !== null &&
@@ -240,13 +235,11 @@ app.put("/api/chores/:id", async (req, res, next) => {
       patch.rewardAmount = Number.isFinite(n) && n >= 0 ? n : 0;
     }
 
-    // Normalize rewardCurrency
     if (patch.rewardCurrency !== undefined && patch.rewardCurrency !== null) {
       const cur = String(patch.rewardCurrency).trim();
       patch.rewardCurrency = cur ? cur.toUpperCase() : "USD";
     }
 
-    // Normalize assignedTo
     if (patch.assignedTo && typeof patch.assignedTo === "object") {
       const name = (patch.assignedTo.name ?? "").trim();
       const role = (patch.assignedTo.role ?? "").trim();
@@ -259,9 +252,7 @@ app.put("/api/chores/:id", async (req, res, next) => {
       { new: true, runValidators: true }
     );
 
-    if (!updated) {
-      return res.status(404).json({ message: "Not found" });
-    }
+    if (!updated) return res.status(404).json({ message: "Not found" });
 
     res.json(updated);
   } catch (e) {
@@ -269,7 +260,9 @@ app.put("/api/chores/:id", async (req, res, next) => {
   }
 });
 
+// ---------------------------------------------------------
 // ========== CATEGORIES (in-memory) ==========
+// ---------------------------------------------------------
 app.get("/api/categories", (_req, res) => {
   const items = [...categories].sort((a, b) => a.name.localeCompare(b.name));
   res.json(items);
@@ -299,10 +292,7 @@ app.put("/api/categories/:id", (req, res) => {
     return res.status(400).json({ message: "Name is required" });
   }
 
-  categories[idx] = {
-    ...categories[idx],
-    ...body,
-  };
+  categories[idx] = { ...categories[idx], ...body };
   res.json(categories[idx]);
 });
 
@@ -315,14 +305,14 @@ app.delete("/api/categories/:id", (req, res) => {
   res.status(204).end();
 });
 
-// ========== EXTERNAL API PROXY: TravelArrow ==========
+// ---------------------------------------------------------
+// ========== TRAVEL ARROW EXTERNAL API PROXY ==========
+// ---------------------------------------------------------
 app.get("/api/travelarrow/accounts/:accountId", async (req, res) => {
   const { accountId } = req.params;
 
   try {
     const url = `https://api.travelarrow.io/accounts/${accountId}`;
-
-    // On modern Node (18+), fetch is global.
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -332,40 +322,37 @@ app.get("/api/travelarrow/accounts/:accountId", async (req, res) => {
         .json({ message: "TravelArrow error", status: response.status });
     }
 
-    const data = await response.json();
-    res.json(data);
+    res.json(await response.json());
   } catch (err) {
     console.error("TravelArrow proxy error:", err);
     res.status(500).json({ message: "Failed to contact TravelArrow" });
   }
 });
 
-// ---------- 404 + Error handlers ----------
-app.use((_req, res) => res.status(404).json({ message: "Route not found" }));
-app.use((err, _req, res, _next) => {
-  console.error(err);
-  res.status(500).json({ message: "Server error" });
-});
+// ---------------------------------------------------------
+// ========== AUTH ROUTES ==========
+// ---------------------------------------------------------
+app.use("/api/auth", authRouter);
 
-// ---------- Start server (connect Mongo + GraphQL) ----------
+// ---------------------------------------------------------
+// ========== START SERVER (Mongo + GraphQL) ==========
+// ---------------------------------------------------------
 (async () => {
   try {
     if (MONGO_URI) {
       await mongoose.connect(MONGO_URI);
       console.log("✅ MongoDB connected");
     } else {
-      console.warn(
-        "⚠️  MONGO_URI not set; continuing with in-memory data for non-recipe resources."
-      );
+      console.warn("⚠️  MONGO_URI not set; running with in-memory data.");
     }
   } catch (err) {
-    console.error("Mongo connect failed:", err.message);
-    console.warn("Continuing to serve in-memory routes…");
+    console.error("Mongo connection failed:", err.message);
   }
 
-  // --- GraphQL setup (optional) ---
+  // Load GraphQL
   const { ApolloServer } = await import("@apollo/server");
   const { expressMiddleware } = await import("@as-integrations/express5");
+
   const { default: gqlSchema } = await import("./graphql/schema.mjs").catch(
     () => ({})
   );
@@ -373,32 +360,13 @@ app.use((err, _req, res, _next) => {
     "./graphql/resolvers.mjs"
   ).catch(() => ({}));
 
-  const modSchema = gqlSchema?.typeDefs ? gqlSchema.typeDefs : gqlSchema;
-  const { typeDefs: namedTypeDefs } = await import(
-    "./graphql/schema.mjs"
-  ).catch(() => ({}));
-  const typeDefs = modSchema || namedTypeDefs;
+  const typeDefs =
+    gqlSchema?.typeDefs || gqlSchema || (await import("./graphql/schema.mjs")).typeDefs;
+  const resolvers =
+    gqlResolvers?.resolvers || gqlResolvers || (await import("./graphql/resolvers.js")).resolvers;
 
-  const modResolvers = gqlResolvers?.resolvers
-    ? gqlResolvers.resolvers
-    : gqlResolvers;
-  const { resolvers: namedResolvers } = await import(
-    "./graphql/resolvers.js"
-  ).catch(() => ({}));
-  const resolvers = modResolvers || namedResolvers;
-
-  if (!typeDefs || !resolvers) {
-    console.warn("⚠️  GraphQL schema/resolvers not found. Skipping /graphql route.");
-  } else {
-    let plugins = [];
-    if (process.env.NODE_ENV !== "production") {
-      const { ApolloServerPluginLandingPageLocalDefault } = await import(
-        "@apollo/server/plugin/landingPage/default"
-      );
-      plugins = [ApolloServerPluginLandingPageLocalDefault()];
-    }
-
-    const server = new ApolloServer({ typeDefs, resolvers, plugins });
+  if (typeDefs && resolvers) {
+    const server = new ApolloServer({ typeDefs, resolvers });
     await server.start();
 
     app.use(
@@ -418,6 +386,16 @@ app.use((err, _req, res, _next) => {
   }
 
   app.listen(PORT, () => {
-    console.log(`API listening on http://localhost:${PORT}`);
+    console.log(`🚀 API listening on http://localhost:${PORT}`);
   });
 })();
+
+// ---------------------------------------------------------
+// ========== ERROR HANDLERS ==========
+// ---------------------------------------------------------
+app.use((_req, res) => res.status(404).json({ message: "Route not found" }));
+
+app.use((err, _req, res, _next) => {
+  console.error("Server error:", err);
+  res.status(500).json({ message: "Server error" });
+});
