@@ -49,6 +49,11 @@ app.get("/", (_req, res) => {
   res.json({ ok: true, service: "family-hub-api" });
 });
 
+app.get("/api/health", (_req, res) => {
+  res.json({ ok: true, service: "family-hub-api" });
+});
+
+
 // ---------- In-memory Stores ----------
 let grocery = [];
 let categories = [

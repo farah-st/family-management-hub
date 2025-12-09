@@ -1,0 +1,64 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <h1 class="auth-title">Create an account</h1>
+    <p class="auth-subtitle">Set up your Family Hub login</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <label class="auth-field">
+        <span class="auth-label">Name</span>
+        <input
+          type="text"
+          formControlName="name"
+          class="auth-input"
+          placeholder="Your name"
+        />
+        <span class="auth-error" *ngIf="f.name.touched && f.name.invalid">
+          Name is required.
+        </span>
+      </label>
+
+      <label class="auth-field">
+        <span class="auth-label">Email</span>
+        <input
+          type="email"
+          formControlName="email"
+          class="auth-input"
+          placeholder="you@example.com"
+        />
+        <span class="auth-error" *ngIf="f.email.touched && f.email.invalid">
+          Please enter a valid email.
+        </span>
+      </label>
+
+      <label class="auth-field">
+        <span class="auth-label">Password</span>
+        <input
+          type="password"
+          formControlName="password"
+          class="auth-input"
+          placeholder="At least 6 characters"
+        />
+        <span
+          class="auth-error"
+          *ngIf="f.password.touched && f.password.invalid"
+        >
+          Password must be at least 6 characters.
+        </span>
+      </label>
+
+      <div *ngIf="error" class="auth-error auth-error--banner">
+        {{ error }}
+      </div>
+
+      <button class="auth-button" type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Create account</span>
+        <span *ngIf="loading">Creating…</span>
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Already have an account?
+      <a routerLink="/login">Log in</a>
+    </p>
+  </div>
+</div>

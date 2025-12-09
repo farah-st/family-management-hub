@@ -4,7 +4,7 @@ import { of } from 'rxjs';
 
 import { RecipeService } from './services/recipe.service';
 import type { Recipe } from './models/recipe.model';
-import { WeeklyPlanComponent } from './meal-plan/weekly-plan/weekly-plan.component';
+// import { WeeklyPlanComponent } from './meal-plan/weekly-plan/weekly-plan.component';
 
 /* =========================
    RESOLVERS
@@ -127,15 +127,31 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
       },
     ],
   },
-
-  /* ---------- Weekly plan feature ---------- */
+    /* ---------- Weekly plan feature ---------- */
   {
-  path: 'meal-plan',
-  loadComponent: () =>
-    import('./meal-plan/weekly-plan/weekly-plan.component').then(
-      (m) => m.WeeklyPlanComponent
-    ),
-},
+    path: 'meal-plan',
+    title: 'Meal Plan',
+    loadComponent: () =>
+      import('./meal-plan/weekly-plan/weekly-plan.component').then(
+        (m) => m.WeeklyPlanComponent
+      ),
+  },
+
+/* ---------- Auth feature ---------- */
+  {
+    path: 'login',
+    title: 'Login',
+    loadComponent: () =>
+      import('./auth/login/login.component').then((m) => m.LoginComponent),
+  },
+  {
+    path: 'register',
+    title: 'Register',
+    loadComponent: () =>
+      import('./auth/register/register.component').then(
+        (m) => m.RegisterComponent
+      ),
+  },
 
   /* ---------- 404 (always last) ---------- */
   {
@@ -145,7 +161,5 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
       import('./shared/not-found/not-found.component')
         .then(m => m.NotFoundComponent),
   },
-  { 
-    path: 'meal-plan', component: WeeklyPlanComponent 
-  },
 ];
+

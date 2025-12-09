@@ -1,0 +1,52 @@
+<div class="auth-page">
+  <div class="auth-card">
+    <h1 class="auth-title">Sign in</h1>
+    <p class="auth-subtitle">Welcome back to Family Hub</p>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <label class="auth-field">
+        <span class="auth-label">Email</span>
+        <input
+          type="email"
+          formControlName="email"
+          class="auth-input"
+          placeholder="you@example.com"
+        />
+        <span class="auth-error" *ngIf="f.email.touched && f.email.invalid">
+          Please enter a valid email.
+        </span>
+      </label>
+
+      <label class="auth-field">
+        <span class="auth-label">Password</span>
+        <input
+          type="password"
+          formControlName="password"
+          class="auth-input"
+          placeholder="Enter your password"
+        />
+        <span
+          class="auth-error"
+          *ngIf="f.password.touched && f.password.invalid"
+        >
+          Password is required.
+        </span>
+      </label>
+
+      <div *ngIf="error" class="auth-error auth-error--banner">
+        {{ error }}
+      </div>
+
+      <button class="auth-button" type="submit" [disabled]="loading">
+        <span *ngIf="!loading">Log in</span>
+        <span *ngIf="loading">Signing in…</span>
+      </button>
+    </form>
+
+    <p class="auth-footer">
+      Don’t have an account yet?
+      <a routerLink="/register">Create one</a>
+    </p>
+  </div>
+</div>
+

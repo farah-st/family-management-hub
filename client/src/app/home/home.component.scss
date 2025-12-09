@@ -157,3 +157,32 @@
   color: #6b7280;
   margin-top: 0.5rem;
 }
+
+.home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.home-auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.home-logout-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.home-login-link {
+  font-size: 0.85rem;
+  color: #4f46e5;
+  text-decoration: none;
+}

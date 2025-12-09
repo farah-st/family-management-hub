@@ -1,30 +1,40 @@
+// server/middleware/auth.js
 import jwt from "jsonwebtoken";
+import User from "../models/user.model.js";
 
-export function auth(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-change-me";
 
-  if (!token) return res.status(401).json({ message: "No token provided" });
+export async function authRequired(req, res, next) {
+  const authHeader = req.headers.authorization;
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ message: "No token provided" });
   }
-}
-import jwt from "jsonwebtoken";
 
-export function auth(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
-
-  if (!token) return res.status(401).json({ message: "No token provided" });
+  const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    // Verify token and get payload
+    const payload = jwt.verify(token, JWT_SECRET);
+    const userId = payload.sub;
+
+    // Optional but nice: load fresh user from DB
+    const user = await User.findById(userId).select("-passwordHash");
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    // Shape matches what you return from /login and /register
+    req.user = {
+      id: user._id.toString(),
+      name: user.name,
+      email: user.email,
+      role: user.role,
+    };
+
     next();
-  } catch {
-    res.status(401).json({ message: "Invalid token" });
+  } catch (err) {
+    console.error("JWT verification failed:", err);
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 }
