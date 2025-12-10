@@ -73,4 +73,9 @@ export class WeeklyPlanComponent {
   }
 
   trackByDayIndex = (_: number, __: unknown) => _;
+
+  savePlan(): void {
+    this.mealPlanSvc.saveCurrentPlan();
+  }
+
 }

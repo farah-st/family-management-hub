@@ -12,7 +12,7 @@
   <ng-container *ngIf="vm$ | async as vm">
     <p class="page__subtitle">
       Week of
-      <strong>{{ vm.plan.weekStartIso }}</strong>
+      <strong>{{ vm.plan.weekStartIso | date: 'MM/dd/yyyy' }}</strong>
     </p>
 
     <div class="grid">
@@ -20,7 +20,9 @@
       <div class="grid__corner"></div>
       <div class="grid__day-header" *ngFor="let d of vm.plan.days; trackBy: trackByDayIndex">
         <div class="grid__day-label">{{ d.label }}</div>
-        <div class="grid__day-date">{{ d.dateIso }}</div>
+        <div class="grid__day-date">
+          {{ d.dateIso | date: 'MM/dd/yyyy' }}
+        </div>
       </div>
 
       <!-- Rows for each slot -->
@@ -82,5 +84,11 @@
         </div>
       </div>
     </div>
+
+    <!-- Bottom save button -->
+    <div class="page__footer">
+      <button type="button" (click)="savePlan()">Save Plan</button>
+    </div>
   </ng-container>
 </div>
+

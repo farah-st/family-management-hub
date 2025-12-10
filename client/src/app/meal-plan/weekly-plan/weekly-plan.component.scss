@@ -1,25 +1,33 @@
+// ===============================
+// Page layout + header + controls
+// ===============================
 .page {
+  // Center the page content and constrain max width
   max-width: 72rem;
   margin: 0 auto;
   padding: 1.5rem;
 
   &__header {
+    // Title + controls in a row
     display: flex;
     align-items: center;
     gap: 1rem;
   }
 
   &__title {
+    // Main page title
     font-size: 1.5rem;
     font-weight: 600;
   }
 
   &__controls {
+    // Button group on the right side of header
     margin-left: auto;
     display: flex;
     gap: 0.5rem;
 
     button {
+      // Shared pill-style buttons used in page header
       padding: 0.35rem 0.75rem;
       border-radius: 999px;
       border: 1px solid #d1d5db;
@@ -34,13 +42,18 @@
   }
 
   &__subtitle {
+    // "Week of ..." secondary text under the header
     margin-top: 0.5rem;
     color: #4b5563;
     font-size: 0.9rem;
   }
 }
 
+// ======================================
+// Weekly meal grid (days x meal slots)
+// ======================================
 .grid {
+  // Outer grid container and basic styling
   margin-top: 1rem;
   display: grid;
   grid-template-columns: minmax(8rem, 10rem) repeat(7, minmax(8rem, 1fr));
@@ -50,11 +63,13 @@
   font-size: 0.875rem;
 
   &__corner {
+    // Top-left empty corner cell
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
   }
 
   &__day-header {
+    // Column headers for each day
     padding: 0.5rem;
     text-align: center;
     background: #f9fafb;
@@ -63,15 +78,18 @@
   }
 
   &__day-label {
+    // Day name (Mon, Tue, etc.)
     font-weight: 600;
   }
 
   &__day-date {
+    // Date text under the day name
     font-size: 0.75rem;
     color: #6b7280;
   }
 
   &__row-label {
+    // Row labels on the left (Breakfast, Lunch, Dinner)
     padding: 0.75rem;
     background: #f9fafb;
     border-top: 1px solid #e5e7eb;
@@ -79,6 +97,7 @@
   }
 
   &__cell {
+    // Individual cells for each day/slot
     border-top: 1px solid #e5e7eb;
     border-left: 1px solid #e5e7eb;
     padding: 0.5rem;
@@ -89,22 +108,26 @@
   }
 
   &__cell-content {
+    // Layout for content inside a cell (title + buttons)
     display: flex;
     flex-direction: column;
     width: 100%;
   }
 
   &__recipe-title {
+    // Recipe name shown in the cell
     font-weight: 500;
     margin-bottom: 0.25rem;
   }
 
   &__cell-actions {
+    // "Change" / "Clear" button row inside a cell
     display: flex;
     gap: 0.25rem;
     margin-top: auto;
 
     button {
+      // Small pill-style buttons inside cells
       border-radius: 999px;
       border: 1px solid #d1d5db;
       padding: 0.2rem 0.6rem;
@@ -119,6 +142,7 @@
   }
 
   &__add-btn {
+    // "Add recipe" button shown when cell is empty
     width: 100%;
     border-radius: 0.75rem;
     border: 1px dashed #d1d5db;
@@ -133,14 +157,19 @@
   }
 }
 
+// ======================================
+// Recipe picker modal (overlay + panel)
+// ======================================
 .picker {
   &__overlay {
+    // Full-screen dark overlay behind the modal
     position: fixed;
     inset: 0;
     background: rgba(15, 23, 42, 0.45);
   }
 
   &__panel {
+    // Centered white modal card
     position: fixed;
     inset-inline: 0;
     top: 20%;
@@ -152,12 +181,14 @@
     box-shadow: 0 15px 30px rgba(15, 23, 42, 0.25);
 
     h2 {
+      // Modal title
       font-size: 1.1rem;
       font-weight: 600;
       margin-bottom: 0.75rem;
     }
 
     select {
+      // Recipe dropdown inside the modal
       width: 100%;
       padding: 0.4rem 0.5rem;
       border-radius: 0.5rem;
@@ -168,11 +199,13 @@
   }
 
   &__buttons {
+    // Button row at bottom of modal ("Save" / "Cancel")
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
 
     button {
+      // Default modal button style
       padding: 0.35rem 0.75rem;
       border-radius: 999px;
       border: 1px solid #d1d5db;
@@ -180,6 +213,7 @@
       cursor: pointer;
       background: #f9fafb;
 
+      // Primary action (first button)
       &:first-child {
         background: #111827;
         color: white;
@@ -189,6 +223,30 @@
       &:hover {
         filter: brightness(0.97);
       }
+    }
+  }
+}
+
+// ======================================
+// Page footer (bottom "Save Plan" area)
+// ======================================
+.page__footer {
+  // Container for Save Plan button at bottom of page
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+
+  button {
+    // Match header controls button style for consistency
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+    background: #f9fafb;
+    font-size: 0.875rem;
+    cursor: pointer;
+
+    &:hover {
+      background: #e5e7eb;
     }
   }
 }
