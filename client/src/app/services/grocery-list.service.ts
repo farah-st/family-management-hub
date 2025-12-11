@@ -20,20 +20,22 @@ export class GroceryListService {
   constructor() {
     // Load local cache first so UI renders immediately
     const raw = localStorage.getItem(KEY);
-    this.items = raw ? JSON.parse(raw) as (Ingredient & { id?: string })[] : [];
-
+    this.items = raw ? (JSON.parse(raw) as (Ingredient & { id?: string })[]) : [];
     // Then try to refresh from server (non-blocking)
     this.http.get<RawGroceryItem[]>(this.base).subscribe({
       next: (arr) => {
+        if (!arr || arr.length === 0) {
+          return;
+        }
         const normalized = arr.map(this.toIngredient);
         this.items = normalized;
         this.persist();
       },
       error: () => {
-        // silent fail = stay on local cache
       }
     });
   }
+
 
   /** Same as before: synchronous copy */
   list(): Ingredient[] {

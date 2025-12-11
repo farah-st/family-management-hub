@@ -3,260 +3,262 @@
     "title": "Wash dishes",
     "notes": "Dinner dishes",
     "priority": "med",
-    "dueDate": null,
+    "dueDate": "2025-12-10T00:00:00.000Z",
     "rewardAmount": 0.25,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
-    "title": "Clean living room",
-    "notes": "",
+    "title": "Vacuum living room",
+    "notes": "Before bedtime",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
+    "dueDate": "2025-12-11T00:00:00.000Z",
+    "rewardAmount": 0.50,
+    "rewardCurrency": "USD",
+    "assignments": [
+      {
+        "memberId": "mom",
+        "dueDate": "2025-12-11T00:00:00.000Z",
+        "points": 5
+      }
+    ],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Clean bathroom counter",
+    "notes": "Wipe everything down",
+    "priority": "high",
+    "dueDate": "2025-12-12T00:00:00.000Z",
+    "rewardAmount": 1,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
     "title": "Take out trash",
-    "notes": "Nightly",
+    "notes": "Kitchen bin + recycling",
     "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.25,
+    "dueDate": "2025-12-13T00:00:00.000Z",
+    "rewardAmount": 0.50,
     "rewardCurrency": "USD",
-    "assignments": [],
+    "assignments": [
+      {
+        "memberId": "dad",
+        "dueDate": "2025-12-13T00:00:00.000Z",
+        "points": 3
+      }
+    ],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Vacuum hallway",
-    "notes": "",
-    "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.15,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Wipe kitchen counters",
-    "notes": "After meals",
-    "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.2,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Sweep kitchen",
-    "notes": "Daily",
-    "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.2,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
     "title": "Fold laundry",
-    "notes": "One load",
-    "priority": "high",
-    "dueDate": null,
-    "rewardAmount": 0.4,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Clean bathroom sink",
-    "notes": "",
+    "notes": "Towels + clothes",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
+    "dueDate": "2025-12-14T00:00:00.000Z",
+    "rewardAmount": 0.75,
     "rewardCurrency": "USD",
     "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
+    "completed": [
+      {
+        "on": "2025-12-10T04:00:00.000Z",
+        "memberId": "mom",
+        "paid": false
+      }
+    ],
     "categoryId": null
   },
   {
-    "title": "Clean toilet",
-    "notes": "Weekly",
+    "title": "Clean fridge shelves",
+    "notes": "Top shelf only",
     "priority": "high",
-    "dueDate": null,
-    "rewardAmount": 0.5,
+    "dueDate": "2025-12-15T00:00:00.000Z",
+    "rewardAmount": 2,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
-    "title": "Mop floors",
-    "notes": "Kitchen + hallway",
-    "priority": "high",
-    "dueDate": null,
-    "rewardAmount": 0.4,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Organize pantry",
-    "notes": "",
+    "title": "Organize toy bins",
+    "notes": "Match sets together",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.2,
+    "dueDate": "2025-12-16T00:00:00.000Z",
+    "rewardAmount": 0.25,
+    "rewardCurrency": "USD",
+    "assignments": [
+      {
+        "memberId": "lia",
+        "dueDate": "2025-12-16T00:00:00.000Z",
+        "points": 2
+      }
+    ],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Wipe kitchen table",
+    "notes": "Before dinner",
+    "priority": "low",
+    "dueDate": "2025-12-17T00:00:00.000Z",
+    "rewardAmount": 0.10,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
+    "categoryId": null
+  },
+  {
+    "title": "Mop hallway",
+    "notes": "Use the blue mop",
+    "priority": "high",
+    "dueDate": "2025-12-18T00:00:00.000Z",
+    "rewardAmount": 1,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Clean microwave",
+    "notes": "Inside + outside",
+    "priority": "med",
+    "dueDate": "2025-12-19T00:00:00.000Z",
+    "rewardAmount": 0.50,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [
+      {
+        "on": "2025-12-08T06:00:00.000Z",
+        "memberId": "dad",
+        "paid": false
+      }
+    ],
+    "categoryId": null
+  },
+  {
+    "title": "Feed the dog",
+    "notes": "Morning feeding",
+    "priority": "low",
+    "dueDate": "2025-12-20T00:00:00.000Z",
+    "rewardAmount": 0.15,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
     "categoryId": null
   },
   {
     "title": "Water plants",
-    "notes": "Every 3 days",
+    "notes": "Living room only",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
+    "dueDate": "2025-12-21T00:00:00.000Z",
+    "rewardAmount": 0.20,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Load dishwasher",
-    "notes": "",
-    "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.15,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Unload dishwasher",
-    "notes": "",
-    "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.15,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
     "title": "Make bed",
-    "notes": "Daily",
+    "notes": "",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.05,
+    "dueDate": "2025-12-22T00:00:00.000Z",
+    "rewardAmount": 0.10,
     "rewardCurrency": "USD",
-    "assignments": [],
+    "assignments": [
+      {
+        "memberId": "lia",
+        "dueDate": "2025-12-22T00:00:00.000Z",
+        "points": 1
+      }
+    ],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
-    "title": "Clean mirrors",
+    "title": "Sweep kitchen floor",
     "notes": "",
-    "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
+    "priority": "med",
+    "dueDate": "2025-12-23T00:00:00.000Z",
+    "rewardAmount": 0.35,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
+    "categoryId": null
+  },
+  {
+    "title": "Clean stovetop",
+    "notes": "Remove burners and scrub",
+    "priority": "high",
+    "dueDate": "2025-12-24T00:00:00.000Z",
+    "rewardAmount": 1,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Clear dining table",
+    "notes": "Remove clutter",
+    "priority": "low",
+    "dueDate": "2025-12-25T00:00:00.000Z",
+    "rewardAmount": 0.25,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Scrub bathtub",
+    "notes": "Use bathroom gloves",
+    "priority": "high",
+    "dueDate": "2025-12-26T00:00:00.000Z",
+    "rewardAmount": 2,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
+    "categoryId": null
+  },
+  {
+    "title": "Clean windows",
+    "notes": "Inside only",
+    "priority": "low",
+    "dueDate": "2025-12-27T00:00:00.000Z",
+    "rewardAmount": 0.40,
+    "rewardCurrency": "USD",
+    "assignments": [],
+    "completed": [],
     "categoryId": null
   },
   {
     "title": "Dust shelves",
     "notes": "",
     "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
+    "dueDate": "2025-12-28T00:00:00.000Z",
+    "rewardAmount": 0.30,
     "rewardCurrency": "USD",
     "assignments": [],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   },
   {
-    "title": "Pick up toys",
-    "notes": "Living room",
-    "priority": "med",
-    "dueDate": null,
-    "rewardAmount": 0.15,
+    "title": "Organize pantry",
+    "notes": "Check expiration dates",
+    "priority": "high",
+    "dueDate": "2025-12-29T00:00:00.000Z",
+    "rewardAmount": 1.50,
     "rewardCurrency": "USD",
-    "assignments": [],
+    "assignments": [
+      {
+        "memberId": "mom",
+        "dueDate": "2025-12-29T00:00:00.000Z",
+        "points": 7
+      }
+    ],
     "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Take recycling out",
-    "notes": "Fridays",
-    "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.15,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
-    "categoryId": null
-  },
-  {
-    "title": "Clean microwave",
-    "notes": "",
-    "priority": "low",
-    "dueDate": null,
-    "rewardAmount": 0.1,
-    "rewardCurrency": "USD",
-    "assignments": [],
-    "completed": [],
-    "active": true,
-    "assignedTo": { "assignee": "" },
     "categoryId": null
   }
 ]
