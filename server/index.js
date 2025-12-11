@@ -265,6 +265,37 @@ app.put("/api/chores/:id", async (req, res, next) => {
   }
 });
 
+// Delete a chore
+app.delete("/api/chores/:id", async (req, res, next) => {
+  try {
+    const removed = await Chore.findByIdAndDelete(req.params.id);
+    if (!removed) return res.status(404).json({ message: "Not found" });
+    res.status(204).end();
+  } catch (e) {
+    next(e);
+  }
+});
+
+// Mark a chore as completed by a member
+app.post("/api/chores/:id/complete", async (req, res, next) => {
+  try {
+    const { memberId } = req.body || {};
+
+    const chore = await Chore.findById(req.params.id);
+    if (!chore) return res.status(404).json({ message: "Not found" });
+
+    chore.completed.push({
+      on: new Date(),
+      memberId: memberId || undefined,
+    });
+
+    const saved = await chore.save();
+    res.json(saved);
+  } catch (e) {
+    next(e);
+  }
+});
+
 // ---------------------------------------------------------
 // ========== CATEGORIES (in-memory) ==========
 // ---------------------------------------------------------

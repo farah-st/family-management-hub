@@ -1,10 +1,28 @@
 <div class="mx-auto max-w-3xl p-4">
-  <header class="flex items-center gap-2 mb-4">
+  <header class="chore-header">
+
     <h1 class="text-2xl font-semibold">Chores</h1>
-    <a class="ml-auto px-3 py-2 rounded-xl bg-black text-white" routerLink="new">
+
+    <a
+      routerLink="new"
+      class="px-4 py-1.5 rounded-lg bg-black text-white text-sm leading-none hover:opacity-80 transition"
+    >
       + New
     </a>
   </header>
+
+  <!-- Totals per family member -->
+  <ng-container *ngIf="totals$ | async as totals">
+    <section class="totals-box mb-4">
+      <h2>What I owe for chores</h2>
+      <div class="grid grid-cols-2 gap-2">
+        <div>Mom: {{ totals.mom | currency:'USD':'symbol':'1.2-2' }}</div>
+        <div>Dad: {{ totals.dad | currency:'USD':'symbol':'1.2-2' }}</div>
+        <div>Daughter: {{ totals.daughter | currency:'USD':'symbol':'1.2-2' }}</div>
+        <div>Son: {{ totals.son | currency:'USD':'symbol':'1.2-2' }}</div>
+      </div>
+    </section>
+  </ng-container>
 
   <ng-container *ngIf="vm$ | async as vm; else loading">
     <ng-container *ngIf="vm.length; else empty">
@@ -13,10 +31,10 @@
           *ngFor="let c of vm; trackBy: trackById"
           class="chore-item"
         >
-          <!-- Complete button -->
+          <!-- Done button: opens the member picker -->
           <button
             type="button"
-            (click)="complete(c)"
+            (click)="startComplete(c)"
             class="done-btn"
           >
             Done
@@ -61,6 +79,22 @@
                 {{ c.rewardAmount | currency : (c.rewardCurrency || 'USD') : 'code' : '1.2-2' }}
               </span>
             </div>
+
+            <!-- Member picker appears when selectingForId matches -->
+            <div
+              *ngIf="selectingForId === c.id"
+              class="member-picker mt-2 flex flex-wrap items-center gap-2 text-xs"
+            >
+              <span class="member-picker-label">Who completed this chore?</span>
+              <button
+                *ngFor="let m of members"
+                type="button"
+                class="member-btn"
+                (click)="complete(c, m.id)"
+              >
+                {{ m.label }}
+              </button>
+            </div>
           </div>
 
           <!-- Delete button -->
@@ -77,20 +111,18 @@
   </ng-container>
 
   <ng-template #loading>
-    <div class="animate-pulse p-3 rounded-xl border">
+    <div class="loading-state">
       Loading chores…
     </div>
   </ng-template>
 
   <ng-template #empty>
-    <div class="text-center p-6 rounded-xl border">
+    <div class="empty-state">
       <p class="mb-3">No chores yet.</p>
-      <a routerLink="new" class="px-3 py-2 rounded-xl border">
+      <a routerLink="new">
         Create your first chore
       </a>
     </div>
   </ng-template>
 </div>
-
-
 
