@@ -7,10 +7,18 @@ import { randomUUID } from "crypto";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Routers
 import authRouter from "./routes/auth.js";
 import recipeRouter from "./routes/recipe.js";
 import choreRouter from "./routes/chore.js";
 import createGroceryRouter from "./routes/grocery.js";
+
+// ---------- GraphQL imports ----------
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@as-integrations/express5";
+// use your existing ESM schema + resolvers
+import { typeDefs } from "./graphql/schema.js";
+import { resolvers } from "./graphql/resolvers.js";
 
 // ---------- ESM __dirname shim ----------
 const __filename = fileURLToPath(import.meta.url);
@@ -55,6 +63,9 @@ let categories = [
   { id: randomUUID(), name: "Kitchen", color: "#86efac" },
   { id: randomUUID(), name: "Yard", color: "#60a5fa" },
 ];
+
+// In-memory recipes collection for GraphQL (separate from Mongo recipes)
+let recipes = [];
 
 function newId() {
   return randomUUID();
@@ -139,71 +150,61 @@ app.get("/api/travelarrow/accounts/:accountId", async (req, res) => {
 });
 
 // ---------------------------------------------------------
-// ========== START SERVER (Mongo + GraphQL) ==========
+// ========== MONGO + GRAPHQL (TOP-LEVEL AWAIT) ==========
 // ---------------------------------------------------------
-(async () => {
-  try {
-    if (MONGO_URI) {
-      await mongoose.connect(MONGO_URI);
-      console.log("✅ MongoDB connected");
-    } else {
-      console.warn("⚠️  MONGO_URI not set; running with in-memory data.");
-    }
-  } catch (err) {
-    console.error("Mongo connection failed:", err.message);
+
+// 1) Connect to Mongo (if URI present)
+try {
+  if (MONGO_URI) {
+    await mongoose.connect(MONGO_URI);
+    console.log("✅ MongoDB connected");
+  } else {
+    console.warn("⚠️  MONGO_URI not set; running with in-memory data.");
   }
+} catch (err) {
+  console.error("Mongo connection failed:", err.message);
+}
 
-  // Load GraphQL
-  const { ApolloServer } = await import("@apollo/server");
-  const { expressMiddleware } = await import("@as-integrations/express5");
+// 2) Set up Apollo GraphQL server
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+});
 
-  const { default: gqlSchema } = await import("./graphql/schema.mjs").catch(
-    () => ({})
-  );
-  const { default: gqlResolvers } = await import(
-    "./graphql/resolvers.mjs"
-  ).catch(() => ({}));
+await server.start();
 
-  const typeDefs =
-    gqlSchema?.typeDefs ||
-    gqlSchema ||
-    (await import("./graphql/schema.mjs")).typeDefs;
-  const resolvers =
-    gqlResolvers?.resolvers ||
-    gqlResolvers ||
-    (await import("./graphql/resolvers.js")).resolvers;
+// 3) Mount /graphql BEFORE error handlers
+app.use(
+  "/graphql",
+  cors({ origin: allowedOrigins }),
+  bodyParser.json(),
+  expressMiddleware(server, {
+    context: async ({ req }) => ({
+      auth: req.headers.authorization ?? null,
+      collections: {
+        recipes,
+        grocery,
+      },
+      newId,
+    }),
+  })
+);
 
-  if (typeDefs && resolvers) {
-    const server = new ApolloServer({ typeDefs, resolvers });
-    await server.start();
-
-    app.use(
-      "/graphql",
-      cors({ origin: allowedOrigins }),
-      bodyParser.json(),
-      expressMiddleware(server, {
-        context: async ({ req }) => ({
-          auth: req.headers.authorization ?? null,
-          collections: { recipes: [], grocery },
-          newId,
-        }),
-      })
-    );
-
-    console.log("✅ GraphQL ready at /graphql");
-  }
-
-  app.listen(PORT, () => {
-    console.log(`🚀 API listening on http://localhost:${PORT}`);
-  });
-})();
+console.log("✅ GraphQL ready at /graphql");
 
 // ---------------------------------------------------------
-// ========== ERROR HANDLERS ==========
+// ========== ERROR HANDLERS (MUST BE LAST) ==========
 // ---------------------------------------------------------
 app.use((_req, res) => res.status(404).json({ message: "Route not found" }));
 
 app.use((err, _req, res, _next) => {
   console.error("Server error:", err);
   res.status(500).json({ message: "Server error" });
+});
+
+// ---------------------------------------------------------
+// ========== START SERVER ==========
+// ---------------------------------------------------------
+app.listen(PORT, () => {
+  console.log(`🚀 API listening on http://localhost:${PORT}`);
 });
