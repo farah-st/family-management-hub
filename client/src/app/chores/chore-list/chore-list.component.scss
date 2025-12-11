@@ -92,7 +92,7 @@ a[routerLink="new"] {
   font-size: 0.75rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
 /* "Done" button */
@@ -176,6 +176,28 @@ a[routerLink="new"] {
   color: #475569;
 }
 
+/* "Paid" button in totals section */
+.paid-total-btn {
+  @extend .small-btn;
+  border: 1px solid #22c55e; /* green-500 */
+  background: #dcfce7; /* green-100 */
+  color: #166534; /* green-700 */
+  font-weight: 500;
+
+  &:hover:not(:disabled) {
+    background: #bbf7d0; /* green-200 */
+    border-color: #16a34a; /* green-600 */
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+    background: #e5e7eb; /* slate-200 */
+    border-color: #cbd5e1; /* slate-300 */
+    color: #6b7280; /* slate-500 */
+  }
+}
+
 /* Loading / empty state */
 .empty-state,
 .loading-state {
@@ -204,4 +226,3 @@ ul {
   margin: 0;
   padding: 0;
 }
-

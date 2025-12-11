@@ -23,7 +23,31 @@ interface MemberTotals {
 export class ChoreListComponent {
   private svc = inject(ChoreService);
 
+  // Full list from service
   vm$ = this.svc.list();
+
+  // Only open chores (not completed, still active),
+  // sorted by earliest due date
+  open$ = this.vm$.pipe(
+    map((chores) =>
+      chores
+        .filter(
+          (c) =>
+            c.active !== false &&
+            (!c.completed || c.completed.length === 0)
+        )
+        .sort((a, b) => {
+          const da = this.firstDueDate(a);
+          const db = this.firstDueDate(b);
+
+          if (!da && !db) return 0;
+          if (!da) return 1;
+          if (!db) return -1;
+
+          return new Date(da).getTime() - new Date(db).getTime();
+        })
+    )
+  );
 
   // which chore is currently choosing a member for completion
   selectingForId: string | null = null;
@@ -36,7 +60,8 @@ export class ChoreListComponent {
     { id: 'son', label: 'Son' },
   ];
 
-  // totals per member, computed from chores + completed entries
+  // totals per member, computed from ALL chores + completed entries
+  // but ONLY counting completions that are NOT paid
   totals$ = this.vm$.pipe(
     map((chores): MemberTotals => {
       const totals: MemberTotals = {
@@ -51,6 +76,9 @@ export class ChoreListComponent {
         if (!reward) continue;
 
         for (const entry of chore.completed ?? []) {
+          // skip paid completions
+          if (entry.paid) continue;
+
           const m = entry.memberId as keyof MemberTotals | undefined;
           if (m && totals[m] !== undefined) {
             totals[m] += reward;
@@ -77,6 +105,15 @@ export class ChoreListComponent {
     });
   }
 
+  // NEW: Pay everything owed to a specific member
+  payMember(memberId: 'mom' | 'dad' | 'daughter' | 'son'): void {
+    if (!confirm(`Mark everything owed to ${memberId} as paid?`)) return;
+
+    this.svc.payMember(memberId).subscribe({
+      error: () => console.error('Failed to mark member as paid', memberId),
+    });
+  }
+
   firstDueDate(c: Chore): string | null {
     return c.dueDate ?? c.assignments?.[0]?.dueDate ?? null;
   }
@@ -88,5 +125,33 @@ export class ChoreListComponent {
     });
   }
 
+  // --- Due status helpers ---
+
+  isOverdue(c: Chore): boolean {
+    const due = this.firstDueDate(c);
+    if (!due) return false;
+
+    const today = this.startOfDay(new Date());
+    const dueDate = this.startOfDay(new Date(due));
+
+    return dueDate.getTime() < today.getTime();
+  }
+
+  isDueToday(c: Chore): boolean {
+    const due = this.firstDueDate(c);
+    if (!due) return false;
+
+    const today = this.startOfDay(new Date());
+    const dueDate = this.startOfDay(new Date(due));
+
+    return dueDate.getTime() === today.getTime();
+  }
+
+  private startOfDay(d: Date): Date {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  }
+
   trackById = (_: number, c: Chore): string => c.id;
 }
+
+

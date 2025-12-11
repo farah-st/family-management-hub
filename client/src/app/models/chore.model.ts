@@ -12,8 +12,9 @@ export interface ChoreAssignment {
 }
 
 export interface ChoreCompletion {
-  on: string;  // ISO
+  on: string;  // ISO date string
   memberId?: string;
+  paid?: boolean; // <= NEW: whether this completion has been paid out
 }
 
 // AssignedTo fields must be optional because server allows missing ones
@@ -46,3 +47,4 @@ export interface Chore {
   createdAt?: string;
   updatedAt?: string;
 }
+

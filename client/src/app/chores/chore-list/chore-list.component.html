@@ -1,6 +1,5 @@
 <div class="mx-auto max-w-3xl p-4">
   <header class="chore-header">
-
     <h1 class="text-2xl font-semibold">Chores</h1>
 
     <a
@@ -15,20 +14,76 @@
   <ng-container *ngIf="totals$ | async as totals">
     <section class="totals-box mb-4">
       <h2>What I owe for chores</h2>
-      <div class="grid grid-cols-2 gap-2">
-        <div>Mom: {{ totals.mom | currency:'USD':'symbol':'1.2-2' }}</div>
-        <div>Dad: {{ totals.dad | currency:'USD':'symbol':'1.2-2' }}</div>
-        <div>Daughter: {{ totals.daughter | currency:'USD':'symbol':'1.2-2' }}</div>
-        <div>Son: {{ totals.son | currency:'USD':'symbol':'1.2-2' }}</div>
+      <div class="grid grid-cols-1 gap-2">
+        <div class="flex items-center justify-between">
+          <span>
+            Mom:
+            {{ totals.mom | currency:'USD':'symbol':'1.2-2' }}
+          </span>
+          <button
+            type="button"
+            class="paid-total-btn"
+            (click)="payMember('mom')"
+            [disabled]="totals.mom === 0"
+          >
+            Paid
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span>
+            Dad:
+            {{ totals.dad | currency:'USD':'symbol':'1.2-2' }}
+          </span>
+          <button
+            type="button"
+            class="paid-total-btn"
+            (click)="payMember('dad')"
+            [disabled]="totals.dad === 0"
+          >
+            Paid
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span>
+            Daughter:
+            {{ totals.daughter | currency:'USD':'symbol':'1.2-2' }}
+          </span>
+          <button
+            type="button"
+            class="paid-total-btn"
+            (click)="payMember('daughter')"
+            [disabled]="totals.daughter === 0"
+          >
+            Paid
+          </button>
+        </div>
+
+        <div class="flex items-center justify-between">
+          <span>
+            Son:
+            {{ totals.son | currency:'USD':'symbol':'1.2-2' }}
+          </span>
+          <button
+            type="button"
+            class="paid-total-btn"
+            (click)="payMember('son')"
+            [disabled]="totals.son === 0"
+          >
+            Paid
+          </button>
+        </div>
       </div>
     </section>
   </ng-container>
 
-  <ng-container *ngIf="vm$ | async as vm; else loading">
-    <ng-container *ngIf="vm.length; else empty">
+  <!-- Main list of OPEN chores -->
+  <ng-container *ngIf="open$ | async as chores; else loading">
+    <ng-container *ngIf="chores.length; else empty">
       <ul class="grid gap-2">
         <li
-          *ngFor="let c of vm; trackBy: trackById"
+          *ngFor="let c of chores; trackBy: trackById"
           class="chore-item"
         >
           <!-- Done button: opens the member picker -->
@@ -42,8 +97,8 @@
 
           <!-- Main content -->
           <div class="flex-1 min-w-0">
-            <!-- Title + due date + priority -->
-            <div class="flex items-center gap-2">
+            <!-- Title + due date + priority + due status -->
+            <div class="flex items-center gap-2 flex-wrap">
               <a [routerLink]="[c.id]" class="chore-title">
                 {{ c.title }}
               </a>
@@ -53,6 +108,20 @@
                 class="ml-2 text-xs text-slate-500"
               >
                 Due {{ due | date: 'MMM d' }}
+              </span>
+
+              <span
+                *ngIf="isOverdue(c)"
+                class="due-pill due-pill--overdue"
+              >
+                Overdue
+              </span>
+
+              <span
+                *ngIf="!isOverdue(c) && isDueToday(c)"
+                class="due-pill due-pill--today"
+              >
+                Due today
               </span>
 
               <span class="priority-pill">
@@ -97,14 +166,16 @@
             </div>
           </div>
 
-          <!-- Delete button -->
-          <button
-            type="button"
-            class="delete-btn"
-            (click)="remove(c)"
-          >
-            Delete
-          </button>
+          <!-- Right-side actions -->
+          <div class="flex flex-col gap-1">
+            <button
+              type="button"
+              class="delete-btn"
+              (click)="remove(c)"
+            >
+              Delete
+            </button>
+          </div>
         </li>
       </ul>
     </ng-container>
@@ -125,4 +196,5 @@
     </div>
   </ng-template>
 </div>
+
 

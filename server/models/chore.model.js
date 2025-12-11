@@ -25,13 +25,16 @@ const assignmentSchema = new mongoose.Schema(
   { _id: false }
 );
 
+
 const completionSchema = new mongoose.Schema(
   {
     on: { type: Date, required: true },
-    memberId: String,
+    memberId: { type: String },
+    paid: { type: Boolean, default: false }, // << ensure this exists
   },
   { _id: false }
 );
+
 
 // Inline "assigned to" info (name + role)
 const assignedToSchema = new mongoose.Schema(

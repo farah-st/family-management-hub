@@ -156,4 +156,19 @@ export class ChoreService {
   private save(v: Chore[]): void {
     localStorage.setItem(KEY, JSON.stringify(v));
   }
+
+  //******************************************
+  //* Mark all chores for a member as paid
+  //******************************************
+  payMember(memberId: string): Observable<Chore[]> {
+    return this.http
+      .post<RawChore[]>(`${this.base}/pay-member`, { memberId })
+      .pipe(
+        map(list => list.map(raw => this.normalize(raw))),
+        tap(next => {
+          this.subject.next(next);
+          this.save(next);
+        })
+      );
+  }
 }
