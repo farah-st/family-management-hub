@@ -16,6 +16,29 @@ export class MealPlanService {
   // -----------------------------
 
   /**
+   * Snapshot of the currently selected plan (current week in memory).
+   * Useful for one-off actions like "Generate Grocery List".
+   */
+  getCurrentPlanSnapshot(): MealPlan {
+    return this.mealPlanSubject.value;
+  }
+
+  /**
+   * Returns the unique recipeIds used in the currently selected week.
+   * (Null/empty values are filtered out.)
+   */
+  getSelectedRecipeIds(): string[] {
+    const plan = this.mealPlanSubject.value;
+
+    const ids = plan.days.flatMap((d) => {
+      const slots = d.slots as Record<string, string | null | undefined>;
+      return Object.values(slots).filter((v): v is string => typeof v === 'string' && v.length > 0);
+    });
+
+    return Array.from(new Set(ids));
+  }
+
+  /**
    * Set (or clear) a recipe for a specific day/slot in the current week.
    */
   setRecipe(dayIndex: number, slot: MealSlotKey, recipeId: string | null): void {
@@ -179,19 +202,6 @@ export class MealPlanService {
 
   /**
    * Returns Monday of the week for a given date, in UTC.
-   *
-   * Logic:
-   *   - 0 = Sunday, 1 = Monday, ..., 6 = Saturday (getUTCDay())
-   *   - diff = 1 - day:
-   *       Monday (1) → diff = 0 (stay same day)
-   *       Tuesday (2) → diff = -1 (go back 1 day)
-   *       ...
-   *       Saturday (6) → diff = -5 (go back to Monday)
-   *       Sunday (0) → diff = 1 (move forward to next Monday)
-   *
-   * That means:
-   *   - Mon–Sat are treated as part of the "current" week.
-   *   - Sunday is treated as the start of the *upcoming* week (your desired behavior).
    */
   private getMonday(date: Date): Date {
     const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));

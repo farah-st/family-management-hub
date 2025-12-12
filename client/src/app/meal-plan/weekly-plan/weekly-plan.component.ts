@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { combineLatest, map } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { MealPlanService } from '../../services/meal-plan.service';
 import { MealSlotKey } from '../../models/meal-plan.model';
 import { RecipeService } from '../../services/recipe.service';
-
+import { GroceryListService } from '../../services/grocery-list.service';
+import { Ingredient } from '../../models/ingredient.model';
 
 type Slot = MealSlotKey;
 
@@ -20,6 +22,8 @@ type Slot = MealSlotKey;
 export class WeeklyPlanComponent {
   private mealPlanSvc = inject(MealPlanService);
   private recipeSvc = inject(RecipeService);
+  private grocerySvc = inject(GroceryListService);
+  private router = inject(Router);
 
   slots: Slot[] = ['breakfast', 'lunch', 'dinner'];
 
@@ -31,11 +35,14 @@ export class WeeklyPlanComponent {
     selectedRecipeId: '' as string,
   };
 
+  // small UX state for the generate button
+  generating = false;
+
   vm$ = combineLatest([this.mealPlanSvc.mealPlan$, this.recipeSvc.recipes$]).pipe(
     map(([plan, recipes]) => ({
       plan,
       recipes,
-      recipesById: Object.fromEntries(recipes.map(r => [r.id, r] as const)),
+      recipesById: Object.fromEntries(recipes.map((r) => [r.id, r] as const)),
     }))
   );
 
@@ -78,4 +85,32 @@ export class WeeklyPlanComponent {
     this.mealPlanSvc.saveCurrentPlan();
   }
 
+  /**
+   * NEW: Generate grocery list based on the recipes used in the currently selected week.
+   */
+  generateGroceryList(): void {
+    if (this.generating) return;
+    this.generating = true;
+
+    try {
+      const recipeIds = this.mealPlanSvc.getSelectedRecipeIds();
+
+      const ingredients: Ingredient[] = recipeIds.flatMap((id) => {
+        const recipe = this.recipeSvc.get(id);
+        return recipe?.ingredients ?? [];
+      });
+
+      if (ingredients.length === 0) {
+        alert('No recipes selected for this week yet.');
+        return;
+      }
+
+      this.grocerySvc.replaceWithGeneratedFromMealPlan(ingredients);
+
+      // Take them straight to the grocery list so it "proves" the requirement in demo
+      this.router.navigateByUrl('/grocery-list');
+    } finally {
+      this.generating = false;
+    }
+  }
 }

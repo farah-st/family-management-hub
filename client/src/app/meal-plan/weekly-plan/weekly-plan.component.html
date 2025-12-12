@@ -6,6 +6,15 @@
       <button type="button" (click)="prevWeek()">← Previous</button>
       <button type="button" (click)="resetWeek()">This Week</button>
       <button type="button" (click)="nextWeek()">Next →</button>
+
+      <!-- NEW: Generate grocery list -->
+      <button
+        type="button"
+        (click)="generateGroceryList()"
+        [disabled]="generating"
+      >
+        {{ generating ? 'Generating…' : 'Generate Grocery List' }}
+      </button>
     </div>
   </header>
 
@@ -18,7 +27,10 @@
     <div class="grid">
       <!-- Header row -->
       <div class="grid__corner"></div>
-      <div class="grid__day-header" *ngFor="let d of vm.plan.days; trackBy: trackByDayIndex">
+      <div
+        class="grid__day-header"
+        *ngFor="let d of vm.plan.days; trackBy: trackByDayIndex"
+      >
         <div class="grid__day-label">{{ d.label }}</div>
         <div class="grid__day-date">
           {{ d.dateIso | date: 'MM/dd/yyyy' }}
@@ -35,16 +47,22 @@
           class="grid__cell"
           *ngFor="let d of vm.plan.days; let i = index; trackBy: trackByDayIndex"
         >
-          <ng-container
-            *ngIf="d.slots[slot] as recipeId; else emptyCell"
-          >
+          <ng-container *ngIf="d.slots[slot] as recipeId; else emptyCell">
             <div class="grid__cell-content">
               <div class="grid__recipe-title">
-                {{ vm.recipesById[recipeId] ? vm.recipesById[recipeId].title : 'Unknown recipe' }}
+                {{
+                  vm.recipesById[recipeId]
+                    ? vm.recipesById[recipeId].title
+                    : 'Unknown recipe'
+                }}
               </div>
               <div class="grid__cell-actions">
-                <button type="button" (click)="openPicker(i, slot, recipeId)">Change</button>
-                <button type="button" (click)="clearCell(i, slot)">Clear</button>
+                <button type="button" (click)="openPicker(i, slot, recipeId)">
+                  Change
+                </button>
+                <button type="button" (click)="clearCell(i, slot)">
+                  Clear
+                </button>
               </div>
             </div>
           </ng-container>
@@ -60,8 +78,6 @@
           </ng-template>
         </div>
       </ng-container>
-
-      <!-- optional: you can add a footer row for snacks later -->
     </div>
 
     <!-- Simple picker "modal" -->
@@ -91,4 +107,3 @@
     </div>
   </ng-container>
 </div>
-
