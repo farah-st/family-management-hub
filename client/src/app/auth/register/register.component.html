@@ -4,6 +4,29 @@
     <p class="auth-subtitle">Set up your Family Hub login</p>
 
     <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <!-- ✅ Username -->
+      <label class="auth-field">
+        <span class="auth-label">Username</span>
+        <input
+          type="text"
+          formControlName="username"
+          class="auth-input"
+          placeholder="e.g. farahperez"
+          autocomplete="username"
+        />
+        <span class="auth-error" *ngIf="f.username.touched && f.username.invalid">
+          <ng-container *ngIf="f.username.errors?.['required']">
+            Username is required.
+          </ng-container>
+          <ng-container *ngIf="f.username.errors?.['minlength']">
+            Username must be at least 3 characters.
+          </ng-container>
+          <ng-container *ngIf="f.username.errors?.['pattern']">
+            Use letters, numbers, dots, underscores, or dashes only.
+          </ng-container>
+        </span>
+      </label>
+
       <label class="auth-field">
         <span class="auth-label">Name</span>
         <input
@@ -11,6 +34,7 @@
           formControlName="name"
           class="auth-input"
           placeholder="Your name"
+          autocomplete="name"
         />
         <span class="auth-error" *ngIf="f.name.touched && f.name.invalid">
           Name is required.
@@ -24,6 +48,7 @@
           formControlName="email"
           class="auth-input"
           placeholder="you@example.com"
+          autocomplete="email"
         />
         <span class="auth-error" *ngIf="f.email.touched && f.email.invalid">
           Please enter a valid email.
@@ -37,11 +62,9 @@
           formControlName="password"
           class="auth-input"
           placeholder="At least 6 characters"
+          autocomplete="new-password"
         />
-        <span
-          class="auth-error"
-          *ngIf="f.password.touched && f.password.invalid"
-        >
+        <span class="auth-error" *ngIf="f.password.touched && f.password.invalid">
           Password must be at least 6 characters.
         </span>
       </label>

@@ -20,6 +20,10 @@ export class RegisterComponent {
   error: string | null = null;
 
   form = this.fb.group({
+    username: [
+      '',
+      [Validators.required, Validators.minLength(3), Validators.pattern(/^[a-zA-Z0-9._-]+$/)],
+    ],
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
@@ -38,22 +42,28 @@ export class RegisterComponent {
     this.loading = true;
     this.error = null;
 
-    const { name, email, password } = this.form.value;
+    const { username, name, email, password } = this.form.value;
 
     this.auth
-      .register({ name: name!, email: email!, password: password! })
+      .register({
+        username: username!,
+        name: name!,
+        email: email!,
+        password: password!,
+      })
       .subscribe({
         next: () => {
           this.loading = false;
-          // After registering, send them home or to login
           this.router.navigateByUrl('/');
         },
         error: (err) => {
           console.error('Register failed', err);
           this.loading = false;
+
+          // Backend now may return "Username already in use", etc.
           this.error =
             err?.error?.message ||
-            'Registration failed. Please try a different email.';
+            'Registration failed. Please try a different username/email.';
         },
       });
   }

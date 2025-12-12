@@ -1,12 +1,13 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, tap, map } from 'rxjs'; // 👈 add map
+import { BehaviorSubject, tap, map } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 export interface AuthUser {
   id: string;
-  name: string;
-  email: string;
+  username: string; // ✅ NEW
+  name?: string;
+  email?: string;
   role: string;
 }
 
@@ -23,14 +24,13 @@ export class AuthService {
   private userSubject = new BehaviorSubject<AuthUser | null>(this.loadUser());
   user$ = this.userSubject.asObservable();
 
-  // 👇 NEW: observable for login state
   isLoggedIn$ = this.user$.pipe(map((user) => !!user));
 
   private loadUser(): AuthUser | null {
     return JSON.parse(localStorage.getItem('fmh_user') ?? 'null');
   }
 
-  /** Log in with email + password */
+  /** Log in with email + password (unchanged for now) */
   login(email: string, password: string) {
     return this.http
       .post<AuthResponse>(`${this.base}/login`, { email, password })
@@ -43,8 +43,8 @@ export class AuthService {
       );
   }
 
-  /** Register a new account and auto-login */
-  register(data: { name: string; email: string; password: string }) {
+  /** Register a new account and auto-login (now includes username) */
+  register(data: { username: string; name: string; email: string; password: string }) {
     return this.http
       .post<AuthResponse>(`${this.base}/register`, data)
       .pipe(
