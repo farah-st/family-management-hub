@@ -1,52 +1,47 @@
-<header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b">
-  <nav class="mx-auto max-w-5xl px-4 flex items-center gap-6 h-14">
+<header>
+  <nav>
+    <!-- Brand -->
+    <a routerLink="/">Family Hub</a>
 
-    <!-- Logo / Brand -->
-    <a routerLink="/" class="font-semibold tracking-tight text-lg">
-      Family Hub
-    </a>
+    <!-- Hamburger (mobile only) -->
+    <button
+      type="button"
+      class="hamburger"
+      (click)="isMenuOpen = !isMenuOpen"
+      [attr.aria-expanded]="isMenuOpen"
+      aria-controls="mobileNav"
+      aria-label="Open menu"
+    >
+      <span></span><span></span><span></span>
+    </button>
 
-    <!-- Primary navigation -->
-    <div class="flex items-center gap-2 text-sm">
-      <a
-        routerLink="/recipes"
-        routerLinkActive="active-tab"
-        class="nav-tab"
-        >Recipes</a
-      >
+    <!-- Desktop/Tablet links (hidden on mobile) -->
+    <div class="ml-auto nav-links">
+      <a routerLink="/recipes" class="nav-tab" routerLinkActive="active-tab">Recipes</a>
+      <a routerLink="/grocery" class="nav-tab" routerLinkActive="active-tab">Grocery</a>
+      <a routerLink="/chores" class="nav-tab" routerLinkActive="active-tab">Chores</a>
+      <a routerLink="/calendar" class="nav-tab" routerLinkActive="active-tab">Calendar</a>
 
-      <a
-        routerLink="/grocery-list"
-        routerLinkActive="active-tab"
-        class="nav-tab"
-        >Grocery</a
-      >
-
-      <a
-        routerLink="/chores"
-        routerLinkActive="active-tab"
-        class="nav-tab"
-        >Chores</a
-      >
-
-      <a
-        routerLink="/meal-plan"
-        routerLinkActive="active-tab"
-        class="nav-tab"
-        >Meal Plan</a
-      >
-
-      <a
-        routerLink="/calendar"
-        routerLinkActive="active-tab"
-        class="nav-tab"
-        >Calendar</a
-      >
+      <a routerLink="/recipes/new" class="primary-cta">+ New</a>
     </div>
-
   </nav>
+
+  <!-- Mobile panel -->
+  <div
+    id="mobileNav"
+    class="mobile-panel"
+    [class.open]="isMenuOpen"
+  >
+    <a routerLink="/recipes" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Recipes</a>
+    <a routerLink="/grocery" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Grocery</a>
+    <a routerLink="/chores" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Chores</a>
+    <a routerLink="/calendar" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Calendar</a>
+
+    <a routerLink="/recipes/new" class="primary-cta" (click)="isMenuOpen=false">+ New</a>
+  </div>
 </header>
 
-<main class="mx-auto max-w-5xl px-4 py-6">
-  <router-outlet />
+<main>
+  <router-outlet></router-outlet>
 </main>
+

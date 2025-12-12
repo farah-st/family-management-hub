@@ -1,73 +1,229 @@
+/* =========================================================
+   Simple List Page (mobile-first) — FIXED for phone mode
+   Breakpoints:
+   - Mobile:  <= 480px
+   - Tablet:  481px–1024px
+   - Desktop: >= 1025px
+   ========================================================= */
+
 :host {
   display: block;
   padding: 1rem;
-  max-width: 40rem; 
+  max-width: 40rem;
   margin: 0 auto;
-  font-family: system-ui, sans-serif;
-  color: #1f2937; 
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
 }
 
-// Heading
+/* ===== Heading ===== */
 h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.45rem;
+  font-weight: 650;
   margin-bottom: 0.75rem;
   text-align: center;
-  color: #111827; 
+  color: #111827;
+  line-height: 1.2;
 }
 
-// Empty state
+/* ===== Empty state ===== */
 p {
   text-align: center;
-  color: #6b7280; 
+  color: #6b7280;
   margin-top: 2rem;
+  font-size: 0.95rem;
 }
 
-// List
+/* ===== List ===== */
 ul {
   list-style: none;
-  border-top: 1px solid #e5e7eb; 
+  margin: 1rem 0 0;
+  padding: 0;
+  border-top: 1px solid #e5e7eb;
   border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
 
   li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem 0;
+    gap: 0.75rem;
+    padding: 0.75rem 0.75rem;
     border-bottom: 1px solid #e5e7eb;
+
+    /* ✅ KEY FIX: allow flex children to shrink correctly without
+       crushing the text into 1-character columns */
+    min-width: 0;
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     span {
       flex: 1;
+      min-width: 0;              /* ✅ critical for flex text */
       color: #374151;
+      font-size: 0.95rem;
+
+      /* ✅ prevent “vertical letters” */
+      white-space: normal;
+      word-break: normal;        /* don't break every character */
+      overflow-wrap: break-word; /* wrap long words safely */
     }
 
+    /* Remove item button */
     button {
-      color: #dc2626; 
-      font-size: 0.875rem;
-      text-decoration: underline;
       background: none;
       border: none;
+      padding: 0.15rem 0.25rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #dc2626;
+      text-decoration: underline;
       cursor: pointer;
+      white-space: nowrap;
+
+      /* ✅ keep button from squeezing the text */
+      flex-shrink: 0;
+
+      transition: color 0.15s ease;
 
       &:hover {
-        color: #b91c1c; 
+        color: #b91c1c;
+      }
+
+      &:focus-visible {
+        outline: 2px solid rgba(220, 38, 38, 0.3);
+        outline-offset: 2px;
+        border-radius: 0.25rem;
       }
     }
   }
 }
 
-// Clear all button
+/* ===== Clear all button ===== */
 button {
   display: block;
-  margin: 1rem auto 0;
-  padding: 0.5rem 1rem;
-  border: 1px solid #d1d5db; 
-  border-radius: 0.5rem;
+  margin: 1.25rem auto 0;
+  padding: 0.55rem 1.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
   background-color: #f9fafb;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.06s ease;
 
   &:hover {
-    background-color: #f3f4f6; 
+    background-color: #f3f4f6;
+    box-shadow: 0 6px 12px -8px rgba(15, 23, 42, 0.25);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.22);
+    outline-offset: 2px;
+  }
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+:host {
+  display: block;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: #1f2937;
+}
+
+/* Keep your container looking nice even with Tailwind classes */
+.p-4.max-w-2xl.mx-auto {
+  max-width: 40rem;
+}
+
+/* Make list items behave nicely on all sizes */
+ul li {
+  min-width: 0; /* prevents weird “vertical letters” on long text */
+
+  span {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
+  }
+}
+
+/* ========= Mobile layout changes ========= */
+@media (max-width: 480px) {
+  /* stack item text + remove button */
+  ul li {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  /* remove button becomes full-width at the bottom */
+  ul li button {
+    width: 100%;
+    padding: 0.5rem 0;
+    text-align: center;
+    border-radius: 0.5rem;
+    background: #fef2f2;
+    text-decoration: none;
+  }
+
+  /* Clear all button full width (NO deprecation: anchor it) */
+  .p-4.max-w-2xl.mx-auto button.mt-4 {
+    width: 100%;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  :host {
+    padding: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  :host {
+    padding: 1.5rem 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none !important;
+  }
+
+  button:hover {
+    transform: none;
   }
 }

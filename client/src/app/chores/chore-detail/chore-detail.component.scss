@@ -1,0 +1,269 @@
+/* =========================================================
+   Chore Detail Page (mobile-first)
+   Works with your existing template classes:
+   - priority-pill
+   - "p-4 max-w-2xl mx-auto" container
+   ========================================================= */
+
+:host {
+  display: block;
+}
+
+/* Container (matches p-4 max-w-2xl mx-auto intent) */
+.p-4.max-w-2xl.mx-auto {
+  padding: 1.5rem 1rem;
+  max-width: 42rem; // ~max-w-2xl
+  margin: 0 auto;
+}
+
+/* Back link */
+a[routerLink="/chores"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #475569; // slate-600
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  &:hover {
+    text-decoration: underline;
+    color: #334155; // slate-700
+  }
+
+  &:focus-visible {
+    outline: 2px solid rgba(79, 70, 229, 0.25);
+    outline-offset: 3px;
+    border-radius: 0.375rem;
+  }
+}
+
+/* Title */
+h1 {
+  margin-top: 0.75rem; // mt-3
+  font-size: 1.75rem;
+  font-weight: 650;
+  line-height: 1.15;
+  color: #0f172a; // slate-900
+}
+
+/* Priority + Due Date row */
+.mt-1.text-sm.text-slate-600.flex.items-center.gap-3 {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: #475569; // slate-600
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap; // so it doesn't squish on mobile
+}
+
+/* Priority pill (dynamic by value) */
+.priority-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #f1f5f9; // slate-100
+  color: #334155; // slate-700
+}
+
+/* Improve the pill color based on text content (CSS-only approach) */
+.priority-pill {
+  &[ng-reflect-ng-class] {
+    // no-op, keeps Angular happy if you later add classes
+  }
+}
+/* If priority text is exactly "low/med/high" it’s still just text,
+   so we style via :has() (supported in modern Chrome/Edge/Safari).
+   If you need broader support, we can switch to class binding later. */
+@supports selector(:has(*)) {
+  .mt-1.text-sm.text-slate-600.flex.items-center.gap-3:has(.priority-pill) {
+    .priority-pill:has(:is()) {
+      // placeholder so block compiles
+    }
+  }
+
+  /* Low */
+  .mt-1.text-sm.text-slate-600.flex.items-center.gap-3:has(.priority-pill) .priority-pill {
+    // default already fine
+  }
+
+  /* Optional: if you later change template to add classes:
+     <span class="priority-pill priority-pill--high">high</span> */
+}
+.priority-pill--low {
+  background: #ecfeff;
+  color: #155e75;
+  border-color: rgba(21, 94, 117, 0.18);
+}
+.priority-pill--med {
+  background: #fff7ed;
+  color: #9a3412;
+  border-color: rgba(154, 52, 18, 0.18);
+}
+.priority-pill--high {
+  background: #fef2f2;
+  color: #991b1b;
+  border-color: rgba(153, 27, 27, 0.18);
+}
+
+/* Assignee + Reward block */
+.mt-3.text-sm.text-slate-700.space-y-1 {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #334155; // slate-700
+  display: grid;
+  gap: 0.35rem;
+
+  .font-medium {
+    font-weight: 650;
+    color: #0f172a;
+  }
+}
+
+/* Notes */
+.mt-4.bg-slate-50.p-3.rounded-lg.border.text-sm.text-slate-700 {
+  margin-top: 1.25rem;
+  background: #f8fafc; // slate-50
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 0.85rem;
+  padding: 0.95rem 1rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+/* Actions */
+.mt-6.flex.gap-2 {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap; // buttons wrap nicely on small screens
+
+  a,
+  button {
+    appearance: none;
+    border: none;
+    border-radius: 0.85rem;
+    padding: 0.7rem 1rem;
+    font-size: 0.95rem;
+    font-weight: 650;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform 0.08s ease-out,
+      box-shadow 0.12s ease-out,
+      opacity 0.15s ease,
+      filter 0.15s ease;
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 70, 229, 0.22);
+      outline-offset: 2px;
+    }
+  }
+
+  /* Edit (black button in your template) */
+  a.px-4.py-2.rounded-lg.bg-black.text-white {
+    background: #0b1220;
+    color: #fff;
+    box-shadow: 0 8px 16px -10px rgba(2, 6, 23, 0.55);
+
+    &:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.03);
+      box-shadow: 0 12px 20px -12px rgba(2, 6, 23, 0.65);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  /* Delete (red button in your template) */
+  button.px-4.py-2.rounded-lg.bg-red-600.text-white {
+    background: linear-gradient(to right, #dc2626, #ef4444);
+    color: #fff;
+    box-shadow: 0 10px 18px -12px rgba(220, 38, 38, 0.65);
+
+    &:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow: 0 14px 24px -14px rgba(220, 38, 38, 0.7);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Loading state */
+.p-4 {
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+/* Mobile (phones) */
+@media (max-width: 480px) {
+  .p-4.max-w-2xl.mx-auto {
+    padding: 1.25rem 0.85rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .mt-6.flex.gap-2 {
+    a,
+    button {
+      width: 100%; // stack buttons on tiny screens
+    }
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .p-4.max-w-2xl.mx-auto {
+    padding: 1.75rem 1.5rem;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .p-4.max-w-2xl.mx-auto {
+    padding: 2.25rem 2rem;
+  }
+
+  h1 {
+    font-size: 1.85rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .mt-6.flex.gap-2 a,
+  .mt-6.flex.gap-2 button {
+    transition: none !important;
+  }
+
+  .mt-6.flex.gap-2 a:hover,
+  .mt-6.flex.gap-2 button:hover {
+    transform: none;
+  }
+}

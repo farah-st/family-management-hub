@@ -1,15 +1,21 @@
 <div class="p-4 max-w-2xl mx-auto">
   <h1 class="text-2xl font-semibold mb-3">Grocery List</h1>
+
   <div *ngIf="items.length; else empty">
     <ul class="divide-y">
       <li class="py-2 flex justify-between" *ngFor="let it of items; let i = index">
-        <span>{{ it.qty ? (it.qty + ' ') : ''}}{{ it.name }}</span>
+        <span>{{ it.qty ? (it.qty + ' ') : '' }}{{ it.name }}</span>
         <button class="text-sm underline" (click)="remove(i)">remove</button>
       </li>
     </ul>
-    <button class="mt-4 px-3 py-2 rounded-lg border" (click)="clear()">Clear all</button>
+
+    <button class="mt-4 px-3 py-2 rounded-lg border" (click)="clear()">
+      Clear all
+    </button>
   </div>
+
   <ng-template #empty>
     <p class="text-gray-600">No items yet. Add some from a recipe.</p>
   </ng-template>
 </div>
+

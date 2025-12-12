@@ -11,4 +11,5 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 })
 export class AppComponent {
   title = 'client'; 
+  isMenuOpen = false;
 }

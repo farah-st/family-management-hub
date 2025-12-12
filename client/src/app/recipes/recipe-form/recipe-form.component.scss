@@ -1,123 +1,241 @@
+/* =========================================================
+   Recipe Detail (mobile-first + responsive + polished)
+   Breakpoints:
+   - Mobile:  <= 480px
+   - Tablet:  481px–1024px
+   - Desktop: >= 1025px
+   ========================================================= */
+
+/* Root container */
 :host {
   display: block;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   padding: 1rem;
-  max-width: 42rem;
+  color: #111827;
+}
+
+/* Page wrapper */
+.recipe-detail {
+  max-width: 48rem; /* ~ max-w-3xl */
   margin: 0 auto;
-  font-family: system-ui, sans-serif;
-  color: #1f2937; 
 }
 
-a {
-  color: #2563eb; 
-  text-decoration: underline;
+/* Back link */
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  color: #2563eb; /* blue-600 */
+  text-decoration: none;
+
   &:hover {
-    text-decoration: none;
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(37, 99, 235, 0.22);
+    outline-offset: 2px;
+    border-radius: 0.35rem;
   }
 }
 
+/* Title */
 h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-top: 1rem;
-  color: #111827; 
+  font-size: 1.55rem;
+  font-weight: 750;
+  color: #0f172a; /* slate-900 */
+  margin: 0.5rem 0 1rem;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
 }
 
-form {
-  display: grid;
-  gap: 1rem;
-  margin-top: 1rem;
-}
+/* Image block */
+.recipe-image {
+  margin: 0.75rem 0 1.25rem;
 
-label {
-  display: grid;
-  gap: 0.25rem;
-  font-weight: 500;
-
-  span {
-    font-size: 0.9rem;
-    color: #374151; 
-  }
-
-  input,
-  textarea {
-    border: 1px solid #d1d5db; 
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-
-    &:focus {
-      border-color: #2563eb; 
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-      outline: none;
-    }
-  }
-
-  textarea {
-    min-height: 5rem;
-    resize: vertical;
+  img {
+    width: 100%;
+    max-height: 20rem;
+    object-fit: cover;
+    border-radius: 1rem;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+    box-shadow: 0 16px 30px -22px rgba(15, 23, 42, 0.45);
   }
 }
 
+/* Description */
+.description {
+  color: #374151; /* gray-700 */
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+  font-size: 0.98rem;
+}
+
+/* Ingredients */
 .ingredients {
-  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #f9fafb;
 
   h2 {
     font-size: 1rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
+    font-weight: 750;
+    color: #111827; /* gray-900 */
+    margin: 0 0 0.6rem;
   }
 
-  .ingredient-row {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-
-    input {
-      flex: 1;
-    }
-
-    button {
-      padding: 0.4rem 0.6rem;
-      border: 1px solid #d1d5db;
-      border-radius: 0.5rem;
-      background: white;
-      cursor: pointer;
-      font-size: 1.2rem;
-      line-height: 1;
-
-      &:hover {
-        background: #f3f4f6; 
-      }
-    }
+  ul {
+    padding-left: 1.25rem;
+    list-style: disc;
+    margin: 0;
   }
 
-  .add-btn {
-    margin-top: 0.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 0.5rem;
-    padding: 0.5rem 0.75rem;
-    background: #f9fafb; 
-    cursor: pointer;
+  li {
+    margin-bottom: 0.4rem;
+    color: #374151;
+    line-height: 1.45;
+  }
 
-    &:hover {
-      background: #f3f4f6;
-    }
+  em {
+    color: #9ca3af; /* gray-400 */
+    font-style: italic;
   }
 }
 
-button[type='submit'] {
-  margin-top: 1.5rem;
-  background: #111827; 
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1.25rem;
-  font-weight: 500;
+/* Action buttons */
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.actions a,
+.actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 650;
+  border-radius: 0.85rem;
+  border: 1px solid #d1d5db; /* gray-300 */
+  background: white;
+  color: #111827;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.06s ease,
+    opacity 0.2s ease;
 
   &:hover {
-    background: #1f2937; 
+    background: #f9fafb; /* gray-50 */
+    box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.25);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.22);
+    outline-offset: 2px;
+  }
+}
+
+/* Optional: if you want a “danger” feel for delete buttons later,
+   you can add class="btn-danger" and it’ll pick this up. */
+.actions .btn-danger {
+  border-color: rgba(220, 38, 38, 0.35);
+  color: #b91c1c;
+
+  &:hover {
+    background: #fef2f2;
+    border-color: rgba(220, 38, 38, 0.55);
+  }
+}
+
+/* Not found state */
+.not-found {
+  margin-top: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 750;
+  color: #dc2626; /* red-600 */
+}
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+/* Mobile */
+@media (max-width: 480px) {
+  :host {
+    padding: 0.85rem;
+  }
+
+  h1 {
+    font-size: 1.4rem;
+  }
+
+  .recipe-image img {
+    max-height: 16rem;
+    border-radius: 0.9rem;
+  }
+
+  .actions a,
+  .actions button {
+    width: 100%;
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  :host {
+    padding: 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.65rem;
+  }
+
+  .recipe-image img {
+    max-height: 19rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  :host {
+    padding: 1.5rem 1.25rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .recipe-image img {
+    max-height: 22rem;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .actions a,
+  .actions button {
+    transition: none !important;
+  }
+
+  .actions a:hover,
+  .actions button:hover {
+    transform: none;
+    box-shadow: none;
   }
 }

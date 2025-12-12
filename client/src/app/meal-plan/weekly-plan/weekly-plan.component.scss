@@ -1,76 +1,121 @@
-// ===============================
-// Page layout + header + controls
-// ===============================
+/* =========================================================
+   Weekly Meal Plan (responsive + polished)
+   Breakpoints:
+   - Mobile:  <= 480px
+   - Tablet:  481px–1024px
+   - Desktop: >= 1025px
+   Notes:
+   - Grid becomes horizontally scrollable on small screens
+   - Buttons get focus-visible styling + consistent hover/active
+   - Modal is centered and usable on mobile
+   ========================================================= */
+
+/* ===============================
+   Page layout + header + controls
+   =============================== */
 .page {
-  // Center the page content and constrain max width
   max-width: 72rem;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1.25rem 1rem;
 
   &__header {
-    // Title + controls in a row
     display: flex;
-    align-items: center;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.75rem;
+    flex-wrap: wrap;
   }
 
   &__title {
-    // Main page title
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: 1.35rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0;
   }
 
   &__controls {
-    // Button group on the right side of header
     margin-left: auto;
     display: flex;
     gap: 0.5rem;
+    flex-wrap: wrap;
 
     button {
-      // Shared pill-style buttons used in page header
-      padding: 0.35rem 0.75rem;
+      padding: 0.45rem 0.85rem;
       border-radius: 999px;
       border: 1px solid #d1d5db;
       background: #f9fafb;
       font-size: 0.875rem;
+      font-weight: 650;
       cursor: pointer;
+      transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.06s ease;
 
       &:hover {
         background: #e5e7eb;
+        box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.35);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        outline: 3px solid rgba(79, 70, 229, 0.22);
+        outline-offset: 2px;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: default;
+        box-shadow: none;
+        transform: none;
       }
     }
   }
 
   &__subtitle {
-    // "Week of ..." secondary text under the header
-    margin-top: 0.5rem;
+    margin-top: 0.4rem;
     color: #4b5563;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.35;
   }
 }
 
-// ======================================
-// Weekly meal grid (days x meal slots)
-// ======================================
+/* ======================================
+   Weekly meal grid (days x meal slots)
+   ====================================== */
+
+/* A wrapper class is optional, but this lets the grid scroll on small screens
+   without breaking layout. If you don't have this wrapper in HTML,
+   the "overflow-x" applied directly to .grid also helps. */
 .grid {
-  // Outer grid container and basic styling
   margin-top: 1rem;
   display: grid;
   grid-template-columns: minmax(8rem, 10rem) repeat(7, minmax(8rem, 1fr));
   border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
+  border-radius: 0.9rem;
   overflow: hidden;
   font-size: 0.875rem;
+  background: #ffffff;
+
+  /* Make the whole grid scroll horizontally on smaller screens */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+
+  /* Helps the grid keep its “table” feel while scrolling */
+  scroll-snap-type: x proximity;
 
   &__corner {
-    // Top-left empty corner cell
     background: #f9fafb;
     border-bottom: 1px solid #e5e7eb;
   }
 
   &__day-header {
-    // Column headers for each day
-    padding: 0.5rem;
+    padding: 0.55rem 0.5rem;
     text-align: center;
     background: #f9fafb;
     border-left: 1px solid #e5e7eb;
@@ -78,142 +123,195 @@
   }
 
   &__day-label {
-    // Day name (Mon, Tue, etc.)
-    font-weight: 600;
+    font-weight: 650;
+    color: #111827;
   }
 
   &__day-date {
-    // Date text under the day name
     font-size: 0.75rem;
     color: #6b7280;
+    margin-top: 0.1rem;
   }
 
   &__row-label {
-    // Row labels on the left (Breakfast, Lunch, Dinner)
     padding: 0.75rem;
     background: #f9fafb;
     border-top: 1px solid #e5e7eb;
-    font-weight: 500;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
   }
 
   &__cell {
-    // Individual cells for each day/slot
     border-top: 1px solid #e5e7eb;
     border-left: 1px solid #e5e7eb;
-    padding: 0.5rem;
-    min-height: 4rem;
+    padding: 0.55rem;
+    min-height: 4.25rem;
     display: flex;
     align-items: stretch;
     justify-content: stretch;
+    background: #fff;
+
+    /* subtle hover for desktop */
+    transition: background-color 0.12s ease;
+
+    &:hover {
+      background-color: #fcfcfd;
+    }
   }
 
   &__cell-content {
-    // Layout for content inside a cell (title + buttons)
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: 0.35rem;
   }
 
   &__recipe-title {
-    // Recipe name shown in the cell
-    font-weight: 500;
-    margin-bottom: 0.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    line-height: 1.25;
+    word-break: break-word;
   }
 
   &__cell-actions {
-    // "Change" / "Clear" button row inside a cell
     display: flex;
-    gap: 0.25rem;
+    gap: 0.35rem;
     margin-top: auto;
+    flex-wrap: wrap;
 
     button {
-      // Small pill-style buttons inside cells
       border-radius: 999px;
       border: 1px solid #d1d5db;
-      padding: 0.2rem 0.6rem;
-      font-size: 0.75rem;
-      background: white;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 650;
+      background: #ffffff;
       cursor: pointer;
+      transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.06s ease;
 
       &:hover {
         background: #f3f4f6;
+        box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.25);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        outline: 3px solid rgba(79, 70, 229, 0.2);
+        outline-offset: 2px;
       }
     }
   }
 
   &__add-btn {
-    // "Add recipe" button shown when cell is empty
     width: 100%;
-    border-radius: 0.75rem;
+    border-radius: 0.85rem;
     border: 1px dashed #d1d5db;
-    padding: 0.4rem;
+    padding: 0.55rem;
     background: #f9fafb;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 650;
+    color: #111827;
     cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      border-color 0.15s ease,
+      transform 0.06s ease;
 
     &:hover {
       background: #f3f4f6;
+      border-color: #9ca3af;
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 70, 229, 0.2);
+      outline-offset: 2px;
     }
   }
 }
 
-// ======================================
-// Recipe picker modal (overlay + panel)
-// ======================================
+/* ======================================
+   Recipe picker modal (overlay + panel)
+   ====================================== */
 .picker {
   &__overlay {
-    // Full-screen dark overlay behind the modal
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.45);
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 50;
   }
 
   &__panel {
-    // Centered white modal card
     position: fixed;
-    inset-inline: 0;
-    top: 20%;
-    margin-inline: auto;
-    max-width: 20rem;
+    left: 50%;
+    top: 18%;
+    transform: translateX(-50%);
+    width: min(22rem, calc(100vw - 2rem));
     background: white;
-    border-radius: 0.75rem;
+    border-radius: 1rem;
     padding: 1rem;
-    box-shadow: 0 15px 30px rgba(15, 23, 42, 0.25);
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    box-shadow: 0 20px 40px -22px rgba(15, 23, 42, 0.6);
+    z-index: 60;
 
     h2 {
-      // Modal title
       font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
+      font-weight: 700;
+      margin: 0 0 0.75rem 0;
+      color: #111827;
     }
 
     select {
-      // Recipe dropdown inside the modal
       width: 100%;
-      padding: 0.4rem 0.5rem;
-      border-radius: 0.5rem;
+      padding: 0.55rem 0.6rem;
+      border-radius: 0.75rem;
       border: 1px solid #d1d5db;
-      margin-bottom: 0.75rem;
-      font-size: 0.9rem;
+      margin-bottom: 0.85rem;
+      font-size: 0.95rem;
+      background: #fff;
+
+      &:focus {
+        outline: none;
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.16);
+      }
     }
   }
 
   &__buttons {
-    // Button row at bottom of modal ("Save" / "Cancel")
     display: flex;
     justify-content: flex-end;
     gap: 0.5rem;
+    flex-wrap: wrap;
 
     button {
-      // Default modal button style
-      padding: 0.35rem 0.75rem;
+      padding: 0.45rem 0.85rem;
       border-radius: 999px;
       border: 1px solid #d1d5db;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
+      font-weight: 650;
       cursor: pointer;
       background: #f9fafb;
+      transition:
+        filter 0.15s ease,
+        transform 0.06s ease,
+        box-shadow 0.15s ease;
 
-      // Primary action (first button)
       &:first-child {
         background: #111827;
         color: white;
@@ -222,31 +320,152 @@
 
       &:hover {
         filter: brightness(0.97);
+        box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.25);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      &:focus-visible {
+        outline: 3px solid rgba(79, 70, 229, 0.22);
+        outline-offset: 2px;
       }
     }
   }
 }
 
-// ======================================
-// Page footer (bottom "Save Plan" area)
-// ======================================
+/* ======================================
+   Page footer (bottom "Save Plan" area)
+   ====================================== */
 .page__footer {
-  // Container for Save Plan button at bottom of page
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   display: flex;
   justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 
   button {
-    // Match header controls button style for consistency
-    padding: 0.35rem 0.75rem;
+    padding: 0.45rem 0.85rem;
     border-radius: 999px;
     border: 1px solid #d1d5db;
     background: #f9fafb;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+    font-weight: 650;
     cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      box-shadow 0.15s ease,
+      transform 0.06s ease;
 
     &:hover {
       background: #e5e7eb;
+      box-shadow: 0 10px 18px -16px rgba(15, 23, 42, 0.25);
+      transform: translateY(-1px);
     }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 3px solid rgba(79, 70, 229, 0.22);
+      outline-offset: 2px;
+    }
+  }
+}
+
+/* =========================================================
+   Responsive tweaks
+   ========================================================= */
+
+/* Mobile */
+@media (max-width: 480px) {
+  .page {
+    padding: 1rem 0.85rem;
+
+    &__header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    &__controls {
+      margin-left: 0;
+
+      button {
+        width: 100%;
+      }
+    }
+
+    &__title {
+      font-size: 1.25rem;
+    }
+  }
+
+  .grid {
+    border-radius: 0.85rem;
+
+    /* Keep minimum width so horizontal scroll feels intentional */
+    min-width: 52rem; // label column + 7 days
+  }
+
+  .picker__panel {
+    top: 14%;
+  }
+
+  .page__footer {
+    justify-content: stretch;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+/* Tablet */
+@media (min-width: 481px) and (max-width: 1024px) {
+  .page {
+    padding: 1.5rem 1.25rem;
+
+    &__title {
+      font-size: 1.4rem;
+    }
+  }
+
+  .grid {
+    border-radius: 0.9rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .page {
+    padding: 2rem 1.5rem;
+
+    &__title {
+      font-size: 1.55rem;
+    }
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .page__controls button,
+  .grid__cell-actions button,
+  .grid__add-btn,
+  .page__footer button,
+  .picker__buttons button {
+    transition: none !important;
+  }
+
+  .page__controls button:hover,
+  .grid__cell-actions button:hover,
+  .grid__add-btn:hover,
+  .page__footer button:hover,
+  .picker__buttons button:hover {
+    transform: none;
   }
 }
