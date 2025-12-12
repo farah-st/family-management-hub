@@ -31,17 +31,15 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
 /* =========================
    ROUTES
    ========================= */
-  export const routes: Routes = [
+export const routes: Routes = [
   /* ---------- Root landing page ---------- */
   {
     path: '',
     pathMatch: 'full',
     title: 'Family Hub',
     loadComponent: () =>
-      import('./home/home.component')
-        .then(m => m.HomeComponent),
+      import('./home/home.component').then((m) => m.HomeComponent),
   },
-
 
   /* ---------- Legacy redirects ---------- */
   // /chore → /chores (singular → plural)
@@ -56,31 +54,35 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
         path: '',
         title: 'Recipes',
         loadComponent: () =>
-          import('./recipes/recipe-list/recipe-list.component')
-            .then(m => m.RecipeListComponent),
+          import('./recipes/recipe-list/recipe-list.component').then(
+            (m) => m.RecipeListComponent
+          ),
       },
       {
         path: 'new',
         title: 'New Recipe',
         loadComponent: () =>
-          import('./recipes/recipe-form/recipe-form.component')
-            .then(m => m.RecipeFormComponent),
+          import('./recipes/recipe-form/recipe-form.component').then(
+            (m) => m.RecipeFormComponent
+          ),
         canDeactivate: [confirmLeaveForm],
       },
       {
         path: ':id',
         title: 'Recipe Details',
         loadComponent: () =>
-          import('./recipes/recipe-detail/recipe-detail.component')
-            .then(m => m.RecipeDetailComponent),
+          import('./recipes/recipe-detail/recipe-detail.component').then(
+            (m) => m.RecipeDetailComponent
+          ),
         resolve: { recipe: recipeResolver },
       },
       {
         path: ':id/edit',
         title: 'Edit Recipe',
         loadComponent: () =>
-          import('./recipes/recipe-form/recipe-form.component')
-            .then(m => m.RecipeFormComponent),
+          import('./recipes/recipe-form/recipe-form.component').then(
+            (m) => m.RecipeFormComponent
+          ),
         resolve: { recipe: recipeResolver },
         canDeactivate: [confirmLeaveForm],
       },
@@ -92,8 +94,9 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
     path: 'grocery-list',
     title: 'Grocery List',
     loadComponent: () =>
-      import('./grocery/grocery-list/grocery-list.component')
-        .then(m => m.GroceryListComponent),
+      import('./grocery/grocery-list/grocery-list.component').then(
+        (m) => m.GroceryListComponent
+      ),
   },
 
   /* ---------- Chores feature ---------- */
@@ -105,15 +108,17 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
         path: '',
         title: 'Chores',
         loadComponent: () =>
-          import('./chores/chore-list/chore-list.component')
-            .then(m => m.ChoreListComponent),
+          import('./chores/chore-list/chore-list.component').then(
+            (m) => m.ChoreListComponent
+          ),
       },
       {
         path: 'new',
         title: 'New Chore',
         loadComponent: () =>
-          import('./chores/chore-form/chore-form.component')
-            .then(m => m.ChoreFormComponent),
+          import('./chores/chore-form/chore-form.component').then(
+            (m) => m.ChoreFormComponent
+          ),
         canDeactivate: [confirmLeaveForm],
       },
       {
@@ -121,13 +126,15 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
         path: ':id',
         title: 'Edit Chore',
         loadComponent: () =>
-          import('./chores/chore-form/chore-form.component')
-            .then(m => m.ChoreFormComponent),
+          import('./chores/chore-form/chore-form.component').then(
+            (m) => m.ChoreFormComponent
+          ),
         canDeactivate: [confirmLeaveForm],
       },
     ],
   },
-    /* ---------- Weekly plan feature ---------- */
+
+  /* ---------- Weekly plan feature ---------- */
   {
     path: 'meal-plan',
     title: 'Meal Plan',
@@ -137,7 +144,16 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
       ),
   },
 
-/* ---------- Auth feature ---------- */
+  /* ---------- Calendar feature ---------- */
+  {
+    path: 'calendar',
+    loadComponent: () =>
+      import('./calendar/calendar-page.component').then(
+        (m) => m.CalendarPageComponent
+      ),
+  },
+
+  /* ---------- Auth feature ---------- */
   {
     path: 'login',
     title: 'Login',
@@ -158,8 +174,8 @@ const confirmLeaveForm: CanDeactivateFn<DirtyAware> = (cmp) => {
     path: '**',
     title: 'Not Found',
     loadComponent: () =>
-      import('./shared/not-found/not-found.component')
-        .then(m => m.NotFoundComponent),
+      import('./shared/not-found/not-found.component').then(
+        (m) => m.NotFoundComponent
+      ),
   },
 ];
-
