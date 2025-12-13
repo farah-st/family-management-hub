@@ -157,9 +157,9 @@ app.get("/api/travelarrow/accounts/:accountId", async (req, res) => {
 try {
   if (MONGO_URI) {
     await mongoose.connect(MONGO_URI);
-    console.log("✅ MongoDB connected");
+    console.log("MongoDB connected");
   } else {
-    console.warn("⚠️  MONGO_URI not set; running with in-memory data.");
+    console.warn("MONGO_URI not set; running with in-memory data.");
   }
 } catch (err) {
   console.error("Mongo connection failed:", err.message);
@@ -190,7 +190,7 @@ app.use(
   })
 );
 
-console.log("✅ GraphQL ready at /graphql");
+console.log("GraphQL ready at /graphql");
 
 // ---------------------------------------------------------
 // ========== ERROR HANDLERS (MUST BE LAST) ==========
@@ -206,5 +206,5 @@ app.use((err, _req, res, _next) => {
 // ========== START SERVER ==========
 // ---------------------------------------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 API listening on http://localhost:${PORT}`);
+  console.log(`API listening on http://localhost:${PORT}`);
 });

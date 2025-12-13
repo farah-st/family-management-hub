@@ -1,4 +1,3 @@
-// server/routes/auth.js
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -31,7 +30,7 @@ router.post("/register", async (req, res) => {
   try {
     const { username, name, email, password } = req.body || {};
 
-    // ✅ username + password are required for option A
+    //username + password are required for option A
     const u = String(username ?? "").trim().toLowerCase();
     if (!u || u.length < 3) {
       return res.status(400).json({
@@ -43,7 +42,7 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ message: "Password is required" });
     }
 
-    // ✅ Prevent duplicate usernames
+    // Prevent duplicate usernames
     const existingUser = await User.findOne({ username: u });
     if (existingUser) {
       return res.status(409).json({ message: "Username already in use" });
@@ -61,7 +60,7 @@ router.post("/register", async (req, res) => {
     const passwordHash = await bcrypt.hash(String(password), 10);
 
     const user = await User.create({
-      username: u, // ✅ save username
+      username: u, 
       passwordHash,
       name: name ? String(name).trim() : undefined,
       email: e ?? undefined,
@@ -72,7 +71,7 @@ router.post("/register", async (req, res) => {
     res.status(201).json({
       user: {
         id: user._id.toString(),
-        username: user.username, // ✅ return username
+        username: user.username, 
         name: user.name,
         email: user.email,
         role: user.role,
@@ -80,7 +79,6 @@ router.post("/register", async (req, res) => {
       token,
     });
   } catch (err) {
-    // ✅ Better error message for duplicate key (just in case)
     if (err && err.code === 11000) {
       const field = Object.keys(err.keyPattern || {})[0] || "field";
       return res.status(409).json({ message: `${field} already in use` });
@@ -116,7 +114,7 @@ router.post("/login", async (req, res) => {
     res.json({
       user: {
         id: user._id.toString(),
-        username: user.username, // ✅ return username
+        username: user.username, 
         name: user.name,
         email: user.email,
         role: user.role,
