@@ -22,6 +22,9 @@
       <a routerLink="/chores" class="nav-tab" routerLinkActive="active-tab">Chores</a>
       <a routerLink="/calendar" class="nav-tab" routerLinkActive="active-tab">Calendar</a>
 
+      <!-- NEW -->
+      <a routerLink="/profile" class="nav-tab" routerLinkActive="active-tab">Profile</a>
+
       <a routerLink="/recipes/new" class="primary-cta">+ New</a>
     </div>
   </nav>
@@ -32,16 +35,61 @@
     class="mobile-panel"
     [class.open]="isMenuOpen"
   >
-    <a routerLink="/recipes" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Recipes</a>
-    <a routerLink="/grocery-list" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Grocery</a>
-    <a routerLink="/chores" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Chores</a>
-    <a routerLink="/calendar" class="nav-tab" routerLinkActive="active-tab" (click)="isMenuOpen=false">Calendar</a>
+    <a
+      routerLink="/recipes"
+      class="nav-tab"
+      routerLinkActive="active-tab"
+      (click)="isMenuOpen=false"
+    >
+      Recipes
+    </a>
+    <a
+      routerLink="/grocery-list"
+      class="nav-tab"
+      routerLinkActive="active-tab"
+      (click)="isMenuOpen=false"
+    >
+      Grocery
+    </a>
+    <a
+      routerLink="/chores"
+      class="nav-tab"
+      routerLinkActive="active-tab"
+      (click)="isMenuOpen=false"
+    >
+      Chores
+    </a>
+    <a
+      routerLink="/calendar"
+      class="nav-tab"
+      routerLinkActive="active-tab"
+      (click)="isMenuOpen=false"
+    >
+      Calendar
+    </a>
 
-    <a routerLink="/recipes/new" class="primary-cta" (click)="isMenuOpen=false">+ New</a>
+    <!-- NEW -->
+    <a
+      routerLink="/profile"
+      class="nav-tab"
+      routerLinkActive="active-tab"
+      (click)="isMenuOpen=false"
+    >
+      Profile
+    </a>
+
+    <a
+      routerLink="/recipes/new"
+      class="primary-cta"
+      (click)="isMenuOpen=false"
+    >
+      + New
+    </a>
   </div>
 </header>
 
 <main>
   <router-outlet></router-outlet>
 </main>
+
 

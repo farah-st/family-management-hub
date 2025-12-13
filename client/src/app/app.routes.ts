@@ -153,6 +153,14 @@ export const routes: Routes = [
       ),
   },
 
+  /* ---------- Profile feature ---------- */
+  {
+    path: 'profile',
+    title: 'Profile',
+    loadComponent: () =>
+      import('./profile/profile.component').then((m) => m.ProfileComponent),
+  },
+
   /* ---------- Auth feature ---------- */
   {
     path: 'login',
